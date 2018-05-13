@@ -1,4 +1,5 @@
 from django.contrib.contenttypes.models import ContentType
+from django.db import models
 
 from jetty.filters.model import model_filter_class_factory
 from jetty.serializers.model import model_serializer_factory
@@ -7,9 +8,10 @@ from jetty.views.model import model_viewset_factory
 
 
 class JettyAdminModelDescription(object):
-    def __init__(self, Model, fields=None, actions=list(), ordering_field=None):
+    def __init__(self, Model, fields=None, actions=list(), ordering_field=None, hidden=False):
         self.model = Model
         self.fields = fields
+        self.hidden = hidden
 
         for action in actions:
             action.init_meta()
@@ -19,10 +21,10 @@ class JettyAdminModelDescription(object):
             if ordering_field in map(lambda x: x.name, self.get_model_fields()) \
             else None
         self.content_type = ContentType.objects.get_for_model(Model)
-        self.field_names = list(map(lambda x: x.name, self.get_fields()))
+        self.field_names = list(map(lambda x: x.name, self.get_display_model_fields()))
         self.serializer = model_serializer_factory(Model, self.field_names + ['id'])
         self.detail_serializer = model_detail_serializer_factory(Model, self.field_names + ['id'])
-        self.filter_class = model_filter_class_factory(Model, self.get_fields())
+        self.filter_class = model_filter_class_factory(Model, self.get_display_model_fields())
         self.queryset = Model.objects.all()
         self.viewset = model_viewset_factory(
             Model,
@@ -39,13 +41,44 @@ class JettyAdminModelDescription(object):
         return 'models/{}/{}'.format(self.content_type.app_label, self.content_type.model)
 
     def get_model_fields(self):
-        return self.model._meta.get_fields()
+        fields = self.model._meta.get_fields()
+        def filter_fields(x):
+            if any(map(lambda rel: isinstance(x, rel), [
+                models.OneToOneRel,
+                models.OneToOneField,
+                models.ManyToOneRel,
+                models.ManyToManyField,
+                models.ManyToManyRel
+            ])):
+                return False
+            return True
+        return filter(filter_fields, fields)
 
-    def get_fields(self):
+    def get_model_related_fields(self):
+        fields = self.model._meta.get_fields(include_hidden=True)
+        def filter_fields(x):
+            if any(map(lambda rel: isinstance(x, rel), [
+                models.OneToOneRel,
+                models.OneToOneField,
+                models.ManyToOneRel,
+                models.ManyToManyField,
+                models.ManyToManyRel
+            ])):
+                return True
+            return False
+        return filter(filter_fields, fields)
+
+    def get_display_model_fields(self):
         fields = self.get_model_fields()
-        if self.fields:
-            fields = filter(lambda x: x.name in self.fields or x.name == self.ordering_field, fields)
-        return fields
+        def filter_fields(x):
+            if x.name == 'id':
+                return False
+            elif x.name == self.ordering_field:
+                return True
+            elif self.fields:
+                return x.name in self.fields
+            return True
+        return filter(filter_fields, fields)
 
     def serialize(self):
         return {
@@ -53,6 +86,7 @@ class JettyAdminModelDescription(object):
             'app_label': self.content_type.app_label,
             'verbose_name': self.model._meta.verbose_name,
             'verbose_name_plural': self.model._meta.verbose_name_plural,
+            'hidden': self.hidden,
             'fields': map(lambda field: {
                 'name': field.name,
                 'verbose_name': field.verbose_name,
@@ -61,7 +95,15 @@ class JettyAdminModelDescription(object):
                 'field': field.__class__.__name__,
                 'editable': field.editable,
                 'filterable': field.name in self.filter_class.Meta.fields
-            }, self.get_fields()),
+            }, self.get_display_model_fields()),
+            'related_fields': map(lambda field: {
+                'name': field.name,
+                'verbose_name': field.related_model._meta.verbose_name_plural,
+                'related_model': self.serialize_model(field.related_model),
+                'field': field.__class__.__name__,
+                'related_model_field': field.remote_field.name,
+                'through': self.serialize_model(field.through) if isinstance(field, models.ManyToManyRel) else None
+            }, self.get_model_related_fields()),
             'actions': map(lambda action: {
                 'name': action._meta.name,
                 'verbose_name': action._meta.verbose_name,
@@ -74,6 +116,18 @@ class JettyAdminModelDescription(object):
             }, map(lambda action: action(), self.actions)),
             'ordering_field': self.ordering_field
         }
+
+    def get_model(self):
+        return {
+            'model': self.content_type.model,
+            'app_label': self.content_type.app_label,
+        }
+
+    def get_related_models(self):
+        return map(lambda field: {
+            'model': field.related_model,
+            'model_info': self.serialize_model(field.related_model)
+        }, self.get_model_related_fields())
 
     def serialize_model(self, Model):
         if not Model:

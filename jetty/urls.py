@@ -18,6 +18,8 @@ def init_urls():
 
     router = Router()
 
+    jetty.register_related_models()
+
     for model in jetty.models:
         router.register(model.viewset_url, model.viewset)
 
