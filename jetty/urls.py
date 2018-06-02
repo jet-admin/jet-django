@@ -29,7 +29,7 @@ def init_urls():
     router.register('widgets', WidgetViewSet)
 
     extra_urls = [
-        url(r'^model_descriptions', jetty.models_view().as_view(), name='model-descriptions')
+        url(r'^model_descriptions/', jetty.models_view().as_view(), name='model-descriptions')
     ]
 
     api_urls = router.urls + extra_urls
