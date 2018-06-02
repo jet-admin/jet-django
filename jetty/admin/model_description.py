@@ -54,7 +54,7 @@ class JettyAdminModelDescription(object):
             return True
         return filter(filter_fields, fields)
 
-    def get_model_related_fields(self):
+    def get_model_relations(self):
         fields = self.model._meta.get_fields(include_hidden=True)
         def filter_fields(x):
             if any(map(lambda rel: isinstance(x, rel), [
@@ -96,14 +96,14 @@ class JettyAdminModelDescription(object):
                 'editable': field.editable,
                 'filterable': field.name in self.filter_class.Meta.fields
             }, self.get_display_model_fields()),
-            'related_fields': map(lambda field: {
+            'relations': map(lambda field: {
                 'name': field.name,
                 'verbose_name': field.related_model._meta.verbose_name_plural,
                 'related_model': self.serialize_model(field.related_model),
                 'field': field.__class__.__name__,
                 'related_model_field': field.remote_field.name,
                 'through': self.serialize_model(field.through) if isinstance(field, models.ManyToManyRel) else None
-            }, self.get_model_related_fields()),
+            }, self.get_model_relations()),
             'actions': map(lambda action: {
                 'name': action._meta.name,
                 'verbose_name': action._meta.verbose_name,
@@ -127,7 +127,7 @@ class JettyAdminModelDescription(object):
         return map(lambda field: {
             'model': field.related_model,
             'model_info': self.serialize_model(field.related_model)
-        }, self.get_model_related_fields())
+        }, self.get_model_relations())
 
     def serialize_model(self, Model):
         if not Model:
