@@ -10,7 +10,7 @@ from jetty.serializers.dashboard_set_widgets import DashboardSetWidgetsSerialize
 class DashboardViewSet(viewsets.ModelViewSet):
     model = Dashboard
     serializer_class = DashboardSerializer
-    queryset = Dashboard.objects.prefetch_related('widgets')
+    queryset = Dashboard.objects.prefetch_related('widgets').all()
     pagination_class = None
 
     @detail_route(methods=['put'])
