@@ -5,6 +5,7 @@ from rest_framework.routers import DefaultRouter
 
 from jetty.admin.jetty import jetty
 from jetty.views.dashboard import DashboardViewSet
+from jetty.views.view_settings import ViewSettingsViewSet
 from jetty.views.widget import WidgetViewSet
 
 
@@ -27,6 +28,7 @@ def init_urls():
 
     router.register('dashboards', DashboardViewSet)
     router.register('widgets', WidgetViewSet)
+    router.register('view_settings', ViewSettingsViewSet)
 
     extra_urls = [
         url(r'^model_descriptions/', jetty.models_view().as_view(), name='model-descriptions')
