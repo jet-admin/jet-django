@@ -10,11 +10,13 @@ class ViewSettings(models.Model):
     )
     model = models.CharField(
         verbose_name=_('model'),
-        max_length=255
+        max_length=255,
+        blank=True,
+        default=''
     )
     layout = models.TextField(
         verbose_name=_('layout'),
-        blank='',
+        blank=True,
         default=''
     )
     date_add = models.DateTimeField(

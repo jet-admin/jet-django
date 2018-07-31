@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 class MenuSettings(models.Model):
     items = models.TextField(
         verbose_name=_('items'),
-        blank='',
+        blank=True,
         default=''
     )
     date_add = models.DateTimeField(

@@ -33,7 +33,7 @@ class Widget(models.Model):
     )
     params = models.TextField(
         verbose_name=_('params'),
-        blank='',
+        blank=True,
         default=''
     )
     date_add = models.DateTimeField(
