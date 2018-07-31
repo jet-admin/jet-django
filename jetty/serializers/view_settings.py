@@ -9,6 +9,7 @@ class ViewSettingsSerializer(serializers.ModelSerializer):
         fields = (
             'app_label',
             'model',
-            'layout',
+            'view',
+            'params',
             'date_add'
         )

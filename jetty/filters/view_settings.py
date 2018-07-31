@@ -9,4 +9,5 @@ class ViewSettingsFilterSet(django_filters.FilterSet):
         fields = (
             'app_label',
             'model',
+            'view',
         )

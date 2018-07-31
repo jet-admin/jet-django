@@ -25,7 +25,8 @@ class ViewSettingsViewSet(viewsets.ModelViewSet):
         queryset = self.filter_queryset(self.get_queryset())
         filter_kwargs = {
             'app_label': self.request.data.get('app_label'),
-            'model': self.request.data.get('model')
+            'model': self.request.data.get('model'),
+            'view': self.request.data.get('view')
         }
         obj = get_object_or_404(queryset, **filter_kwargs)
 

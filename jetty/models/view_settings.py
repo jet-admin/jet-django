@@ -14,8 +14,14 @@ class ViewSettings(models.Model):
         blank=True,
         default=''
     )
-    layout = models.TextField(
-        verbose_name=_('layout'),
+    view = models.CharField(
+        verbose_name=_('view'),
+        max_length=255,
+        blank=True,
+        default='change'
+    )
+    params = models.TextField(
+        verbose_name=_('params'),
         blank=True,
         default=''
     )
