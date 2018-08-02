@@ -20,8 +20,10 @@ def register_token():
     }
 
     r = requests.request('POST', url, headers=headers)
+    success = 200 <= r.status_code < 300
 
-    if r.status_code != 200:
+    if not success:
+        print('Error', r.status_code, r.reason)
         return None, False
 
     result = r.json()
