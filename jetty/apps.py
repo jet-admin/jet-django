@@ -10,5 +10,5 @@ class JettyConfig(AppConfig):
 
         try:
             register_token()
-        except ProgrammingError:  # if no migrations yet
+        except:  # if no migrations yet
             pass
