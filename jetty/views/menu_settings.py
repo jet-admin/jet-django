@@ -12,6 +12,7 @@ class MenuSettingsViewSet(viewsets.ModelViewSet):
     serializer_class = MenuSettingsSerializer
     queryset = MenuSettings.objects.all()
     pagination_class = None
+    authentication_classes = ()
     permission_classes = (HasProjectPermissions,)
 
     def create(self, request, *args, **kwargs):

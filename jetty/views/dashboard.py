@@ -13,6 +13,7 @@ class DashboardViewSet(viewsets.ModelViewSet):
     serializer_class = DashboardSerializer
     queryset = Dashboard.objects.prefetch_related('widgets').all()
     pagination_class = None
+    authentication_classes = ()
     permission_classes = (HasProjectPermissions,)
 
     @detail_route(methods=['put'])

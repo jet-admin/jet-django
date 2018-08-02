@@ -23,7 +23,7 @@ def register_token():
     success = 200 <= r.status_code < 300
 
     if not success:
-        print('Error', r.status_code, r.reason)
+        print('Register Token request error', r.status_code, r.reason)
         return None, False
 
     result = r.json()
@@ -48,6 +48,10 @@ def project_auth(token):
     }
 
     r = requests.request('POST', url, data=data, headers=headers)
+    success = 200 <= r.status_code < 300
 
-    print('auth', r.status_code)
-    return r.status_code == 200
+    if not success:
+        print('Project Auth request error', r.status_code, r.reason)
+        return False
+
+    return True

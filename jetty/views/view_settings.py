@@ -14,6 +14,7 @@ class ViewSettingsViewSet(viewsets.ModelViewSet):
     queryset = ViewSettings.objects
     filter_class = ViewSettingsFilterSet
     pagination_class = None
+    authentication_classes = ()
     permission_classes = (HasProjectPermissions,)
 
     def create(self, request, *args, **kwargs):

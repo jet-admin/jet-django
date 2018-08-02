@@ -12,4 +12,5 @@ class WidgetViewSet(viewsets.ModelViewSet):
     queryset = Widget.objects.prefetch_related('dashboard').all()
     filter_class = WidgetFilterSet
     pagination_class = None
+    authentication_classes = ()
     permission_classes = (HasProjectPermissions,)

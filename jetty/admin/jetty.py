@@ -2,6 +2,8 @@ from jetty.admin.model_description import JettyAdminModelDescription
 from rest_framework import views
 from rest_framework.response import Response
 
+from jetty.permissions import HasProjectPermissions
+
 
 class JettyAdmin(object):
     models = []
@@ -10,6 +12,9 @@ class JettyAdmin(object):
         Admin = self
 
         class View(views.APIView):
+            authentication_classes = ()
+            permission_classes = (HasProjectPermissions,)
+
             def get(self, request, *args, **kwargs):
                 return Response(map(lambda x: x.serialize(), Admin.models))
 

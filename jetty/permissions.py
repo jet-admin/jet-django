@@ -7,8 +7,6 @@ class HasProjectPermissions(BasePermission):
     token_prefix = 'Token '
 
     def has_permission(self, request, view):
-        print('check', request.META)
-
         token = request.META['HTTP_AUTHORIZATION']
 
         if token[:len(self.token_prefix)] != self.token_prefix:
