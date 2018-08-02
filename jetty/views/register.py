@@ -12,5 +12,5 @@ class RegisterView(generic.RedirectView):
         if not token:
             return HttpResponseBadRequest
 
-        self.url = '{}?token={}'.format(settings.JETTY_BACKEND_WEB_BASE_URL, token.token)
+        self.url = '{}/projects/register/{}'.format(settings.JETTY_BACKEND_WEB_BASE_URL, token.token)
         return super().get(request, *args, **kwargs)
