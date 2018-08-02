@@ -12,5 +12,6 @@ class WidgetUpdatePositionSerializer(serializers.ModelSerializer):
             'y',
             'width',
             'height',
+            'params'
         )
         extra_kwargs = {'id': {'read_only': False}}

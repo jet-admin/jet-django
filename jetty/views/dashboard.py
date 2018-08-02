@@ -3,6 +3,7 @@ from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 
 from jetty.models.dashboard import Dashboard
+from jetty.permissions import HasProjectPermissions
 from jetty.serializers.dashboard import DashboardSerializer
 from jetty.serializers.dashboard_set_widgets import DashboardSetWidgetsSerializer
 
@@ -12,6 +13,7 @@ class DashboardViewSet(viewsets.ModelViewSet):
     serializer_class = DashboardSerializer
     queryset = Dashboard.objects.prefetch_related('widgets').all()
     pagination_class = None
+    permission_classes = (HasProjectPermissions,)
 
     @detail_route(methods=['put'])
     def set_widgets(self, request, *args, **kwargs):

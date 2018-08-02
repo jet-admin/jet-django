@@ -4,6 +4,7 @@ from rest_framework import viewsets
 
 from jetty.filters.view_settings import ViewSettingsFilterSet
 from jetty.models.view_settings import ViewSettings
+from jetty.permissions import HasProjectPermissions
 from jetty.serializers.view_settings import ViewSettingsSerializer
 
 
@@ -13,6 +14,7 @@ class ViewSettingsViewSet(viewsets.ModelViewSet):
     queryset = ViewSettings.objects
     filter_class = ViewSettingsFilterSet
     pagination_class = None
+    permission_classes = (HasProjectPermissions,)
 
     def create(self, request, *args, **kwargs):
         try:

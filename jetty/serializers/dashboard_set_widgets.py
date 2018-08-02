@@ -24,7 +24,8 @@ class DashboardSetWidgetsSerializer(serializers.ModelSerializer):
                     x=widget['x'],
                     y=widget['y'],
                     width=widget['width'],
-                    height=widget['height']
+                    height=widget['height'],
+                    params=widget['params']
                 )
 
             widgets.exclude(pk__in=map(lambda x: x['id'], validated_data['widgets'])).delete()

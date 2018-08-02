@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 
 from jetty.models.menu_item import MenuSettings
+from jetty.permissions import HasProjectPermissions
 from jetty.serializers.menu_settings import MenuSettingsSerializer
 
 
@@ -11,6 +12,7 @@ class MenuSettingsViewSet(viewsets.ModelViewSet):
     serializer_class = MenuSettingsSerializer
     queryset = MenuSettings.objects.all()
     pagination_class = None
+    permission_classes = (HasProjectPermissions,)
 
     def create(self, request, *args, **kwargs):
         try:

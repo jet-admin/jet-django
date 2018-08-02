@@ -6,6 +6,7 @@ from rest_framework.serializers import ModelSerializer
 
 from jetty.filters.model_group import GroupFilter
 from jetty.pagination import CustomPageNumberPagination
+from jetty.permissions import HasProjectPermissions
 from jetty.serializers.reorder import reorder_serializer_factory
 
 
@@ -29,9 +30,9 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
     class Viewset(viewsets.ModelViewSet):
         model = build_model
         queryset = build_queryset
-        # permission_classes = [permissions.DjangoModelPermissions]
         pagination_class = CustomPageNumberPagination
         filter_class = build_filter_class
+        permission_classes = (HasProjectPermissions,)
 
         def get_serializer_class(self):
             if self.action == 'group':
