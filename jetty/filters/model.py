@@ -39,6 +39,21 @@ def model_filter_class_factory(build_model, model_fields):
 
         class Meta:
             model = build_model
-            fields = filter_fields
+            fields = dict(list(map(lambda x: (x, [
+                'exact',
+                # 'iexact',
+                'lt',
+                'lte',
+                'gt',
+                'gte',
+                'in',
+                # 'contains',
+                # 'icontains',
+                # 'startswith',
+                # 'istartswith',
+                # 'endswith',
+                # 'iendswith',
+                'isnull',
+            ]), ['id'] + filter_fields)))
 
     return FilterSet
