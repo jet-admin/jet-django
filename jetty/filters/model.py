@@ -54,6 +54,6 @@ def model_filter_class_factory(build_model, model_fields):
                 # 'endswith',
                 # 'iendswith',
                 'isnull',
-            ]), ['id'] + filter_fields)))
+            ]), filter_fields)))
 
     return FilterSet
