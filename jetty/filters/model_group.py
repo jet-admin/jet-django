@@ -1,5 +1,5 @@
 import django_filters
-from django.db.models import Count, Sum, Min, Max, Avg
+from django.db.models import Count, Sum, Min, Max, Avg, Value, F
 from django.db.models.functions import TruncDate
 from django_filters.constants import EMPTY_VALUES
 
@@ -23,8 +23,10 @@ class GroupFilter(django_filters.CharFilter):
         else:
             return qs.none()
 
+        x_lookup = value['x_lookup'] if value['x_lookup'] else F
+
         qs = qs \
-            .annotate(group=TruncDate(value['x_column']))\
+            .annotate(group=x_lookup(value['x_column']))\
             .values('group')\
             .annotate(y_func=y_func)\
             .order_by('group')

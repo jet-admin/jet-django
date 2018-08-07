@@ -48,17 +48,26 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
             queryset = self.filter_queryset(self.get_queryset())
 
             x_column = request.GET['_x_column']
+            x_lookup_name = request.GET.get('_x_lookup')
             y_func = request.GET['_y_func']
             y_column = request.GET.get('_y_column', 'id')
 
             x_field = self.model._meta.get_field(x_column)
+            x_lookup = x_field.class_lookups.get(x_lookup_name)
             y_field = self.model._meta.get_field(y_column)
 
-            x_serializer = ModelSerializer.serializer_field_mapping[type(x_field)]()
-            y_serializer = ModelSerializer.serializer_field_mapping[type(y_field)]()
+            if x_lookup:
+                x_field = x_lookup('none').output_field
+
+            x_serializer_class, x_serializer_kwargs = ModelSerializer().build_standard_field(x_column, x_field)
+            x_serializer = x_serializer_class(**x_serializer_kwargs)
+
+            y_serializer_class, y_serializer_kwargs = ModelSerializer().build_standard_field(y_column, y_field)
+            y_serializer = y_serializer_class(**y_serializer_kwargs)
 
             queryset = GroupFilter().filter(queryset, {
                 'x_column': x_column,
+                'x_lookup': x_lookup,
                 'y_func': y_func,
                 'y_column': y_column
             })
