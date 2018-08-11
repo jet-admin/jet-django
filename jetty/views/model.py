@@ -49,7 +49,7 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
 
             x_column = request.GET['_x_column']
             x_lookup_name = request.GET.get('_x_lookup')
-            y_func = request.GET['_y_func']
+            y_func = request.GET['_y_func'].lower()
             y_column = request.GET.get('_y_column', 'id')
 
             x_field = self.model._meta.get_field(x_column)

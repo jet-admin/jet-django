@@ -1,6 +1,5 @@
 import django_filters
-from django.db.models import Count, Sum, Min, Max, Avg, Value, F
-from django.db.models.functions import TruncDate
+from django.db.models import Count, Sum, Min, Max, Avg, F
 from django_filters.constants import EMPTY_VALUES
 
 
@@ -10,15 +9,15 @@ class GroupFilter(django_filters.CharFilter):
         if value in EMPTY_VALUES:
             return qs
 
-        if value['y_func'] == 'Count':
+        if value['y_func'] == 'count':
             y_func = Count(value['y_column'])
-        elif value['y_func'] == 'Sum':
+        elif value['y_func'] == 'sum':
             y_func = Sum(value['y_column'])
-        elif value['y_func'] == 'Min':
+        elif value['y_func'] == 'min':
             y_func = Min(value['y_column'])
-        elif value['y_func'] == 'Max':
+        elif value['y_func'] == 'max':
             y_func = Max(value['y_column'])
-        elif value['y_func'] == 'Avg':
+        elif value['y_func'] == 'avg':
             y_func = Avg(value['y_column'])
         else:
             return qs.none()
