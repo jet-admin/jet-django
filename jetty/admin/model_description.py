@@ -84,6 +84,7 @@ class JettyAdminModelDescription(object):
         return {
             'model': self.content_type.model,
             'app_label': self.content_type.app_label,
+            'db_table': self.model._meta.db_table,
             'verbose_name': self.model._meta.verbose_name,
             'verbose_name_plural': self.model._meta.verbose_name_plural,
             'hidden': self.hidden,
