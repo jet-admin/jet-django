@@ -7,6 +7,7 @@ from jetty.admin.jetty import jetty
 from jetty.views.dashboard import DashboardViewSet
 from jetty.views.menu_settings import MenuSettingsViewSet
 from jetty.views.register import RegisterView
+from jetty.views.sql import SqlView
 from jetty.views.view_settings import ViewSettingsViewSet
 from jetty.views.widget import WidgetViewSet
 
@@ -35,8 +36,8 @@ def init_urls():
 
     extra_urls = [
         url(r'^model_descriptions/', jetty.models_view().as_view(), name='model-descriptions'),
-        url(r'^register/', RegisterView.as_view(), name='register')
-
+        url(r'^register/', RegisterView.as_view(), name='register'),
+        url(r'^sql/', SqlView.as_view(), name='sql')
     ]
 
     api_urls = router.urls + extra_urls
