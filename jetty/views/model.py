@@ -4,10 +4,21 @@ from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 
+from jetty.filters.model_aggregate import AggregateFilter
 from jetty.filters.model_group import GroupFilter
 from jetty.pagination import CustomPageNumberPagination
 from jetty.permissions import HasProjectPermissions
 from jetty.serializers.reorder import reorder_serializer_factory
+
+
+class AggregateSerializer(serializers.Serializer):
+    y_func = serializers.IntegerField()
+
+    def __init__(self, *args, **kwargs):
+        if 'y_func_serializer' in kwargs:
+            self.fields['y_func'] = kwargs.pop('y_func_serializer')
+
+        super().__init__(*args, **kwargs)
 
 
 class GroupSerializer(serializers.Serializer):
@@ -36,12 +47,38 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
         permission_classes = (HasProjectPermissions,)
 
         def get_serializer_class(self):
-            if self.action == 'group':
+            if self.action == 'aggregate':
+                return AggregateSerializer
+            elif self.action == 'group':
                 return GroupSerializer
             elif self.action == 'retrieve':
                 return build_detail_serializer_class
             else:
                 return build_serializer_class
+
+        @list_route(methods=['get'])
+        def aggregate(self, request):
+            queryset = self.filter_queryset(self.get_queryset())
+
+            y_func = request.GET['_y_func'].lower()
+            y_column = request.GET.get('_y_column', 'id')
+
+            y_field = self.model._meta.get_field(y_column)
+
+            y_serializer_class, y_serializer_kwargs = ModelSerializer().build_standard_field(y_column, y_field)
+            y_serializer = y_serializer_class(**y_serializer_kwargs)
+
+            queryset = AggregateFilter().filter(queryset, {
+                'y_func': y_func,
+                'y_column': y_column
+            })
+
+            serializer = self.get_serializer(
+                queryset,
+                y_func_serializer=y_serializer
+            )
+
+            return Response(serializer.data)
 
         @list_route(methods=['get'])
         def group(self, request):
