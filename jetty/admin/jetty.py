@@ -1,6 +1,7 @@
 from jetty.admin.model_description import JettyAdminModelDescription
 from rest_framework import views
 from rest_framework.response import Response
+from django.apps import apps
 
 from jetty.permissions import HasProjectPermissions
 
@@ -42,3 +43,8 @@ class JettyAdmin(object):
                 registered.add(key)
 
 jetty = JettyAdmin()
+
+models = apps.get_models()
+
+for model in models:
+    jetty.register(model)
