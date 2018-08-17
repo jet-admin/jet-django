@@ -22,8 +22,8 @@ class JettyAdminModelDescription(object):
             else None
         self.content_type = ContentType.objects.get_for_model(Model)
         self.field_names = list(map(lambda x: x.name, self.get_display_model_fields()))
-        self.serializer = model_serializer_factory(Model, self.field_names + ['id'])
-        self.detail_serializer = model_detail_serializer_factory(Model, self.field_names + ['id'])
+        self.serializer = model_serializer_factory(Model, self.field_names)
+        self.detail_serializer = model_detail_serializer_factory(Model, self.field_names)
         self.filter_class = model_filter_class_factory(Model, self.get_display_model_fields())
         self.queryset = Model.objects.all()
         self.viewset = model_viewset_factory(
@@ -71,9 +71,7 @@ class JettyAdminModelDescription(object):
     def get_display_model_fields(self):
         fields = self.get_model_fields()
         def filter_fields(x):
-            if x.name == 'id':
-                return False
-            elif x.name == self.ordering_field:
+            if x.name == self.ordering_field:
                 return True
             elif self.fields:
                 return x.name in self.fields

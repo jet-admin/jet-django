@@ -19,8 +19,13 @@ def model_filter_class_factory(build_model, model_fields):
     def search_field(field):
         return isinstance(field, (fields.CharField, fields.TextField))
 
-    filter_fields = list(map(lambda x: x.name, filter(filter_field, model_fields)))
     search_fields = list(map(lambda x: x.name, filter(search_field, model_fields)))
+
+    filter_field_names = list(map(lambda x: x.name, filter(filter_field, model_fields)))
+    filter_fields = dict(map(
+        lambda x: [x.name, list(x.get_lookups().keys())],
+        filter(lambda x: x.name in filter_field_names, build_model._meta.fields)
+    ))
 
     class SearchFilter(django_filters.CharFilter):
 
@@ -34,26 +39,11 @@ def model_filter_class_factory(build_model, model_fields):
             return qs
 
     class FilterSet(django_filters.FilterSet):
-        _order_by = filters.OrderingFilter(fields=filter_fields)
+        _order_by = filters.OrderingFilter(fields=filter_field_names)
         _search = SearchFilter()
 
         class Meta:
             model = build_model
-            fields = dict(list(map(lambda x: (x, [
-                'exact',
-                # 'iexact',
-                'lt',
-                'lte',
-                'gt',
-                'gte',
-                'in',
-                # 'contains',
-                # 'icontains',
-                # 'startswith',
-                # 'istartswith',
-                # 'endswith',
-                # 'iendswith',
-                'isnull',
-            ]), filter_fields)))
+            fields = filter_fields
 
     return FilterSet
