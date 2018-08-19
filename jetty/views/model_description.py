@@ -73,6 +73,22 @@ class ModelDescriptionViewSet(viewsets.ModelViewSet):
 
             base[md_i]['fields'] = md_fields
 
+            md_flex_fields = list(base[md_i]['flex_fields'])
+
+            for field_override in md_override.get('flex_fields', []):
+                field_i = find_index(md_flex_fields, lambda x: x.get('name') == field_override.get('name'))
+
+                if field_i is None:
+                    field = {'name': field_override.get('name')}
+                    md_flex_fields.append(field)
+                    field_i = len(md_flex_fields) - 1
+
+                for item in ['verbose_name', 'field', 'query', 'code']:
+                    if item in field_override:
+                        md_flex_fields[field_i][item] = field_override[item]
+
+            base[md_i]['flex_fields'] = md_flex_fields
+
             md_relations = list(base[md_i]['relations'])
 
             for relation_override in md_override.get('relations', []):

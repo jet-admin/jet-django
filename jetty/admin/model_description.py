@@ -95,6 +95,7 @@ class JettyAdminModelDescription(object):
                 'editable': field.editable,
                 'filterable': field.name in self.filter_class.Meta.fields
             }, self.get_display_model_fields()),
+            'flex_fields': [],
             'relations': map(lambda field: {
                 'name': field.name,
                 'verbose_name': field.related_model._meta.verbose_name_plural,
