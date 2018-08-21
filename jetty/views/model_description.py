@@ -67,7 +67,7 @@ class ModelDescriptionViewSet(viewsets.ModelViewSet):
                 if field_i is None:
                     continue
 
-                for item in ['verbose_name', 'field', 'editable', 'filterable']:
+                for item in ['verbose_name', 'field', 'editable', 'filterable', 'params']:
                     if item in md_fields[field_i] and item in field_override:
                         md_fields[field_i][item] = field_override[item]
 
@@ -83,7 +83,7 @@ class ModelDescriptionViewSet(viewsets.ModelViewSet):
                     md_flex_fields.append(field)
                     field_i = len(md_flex_fields) - 1
 
-                for item in ['verbose_name', 'field', 'query', 'code']:
+                for item in ['verbose_name', 'field', 'query', 'code', 'params']:
                     if item in field_override:
                         md_flex_fields[field_i][item] = field_override[item]
 

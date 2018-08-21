@@ -90,10 +90,12 @@ class JettyAdminModelDescription(object):
                 'name': field.name,
                 'verbose_name': field.verbose_name,
                 'is_relation': field.is_relation,
-                'related_model': self.serialize_model(field.related_model),
                 'field': field.__class__.__name__,
                 'editable': field.editable,
-                'filterable': field.name in self.filter_class.Meta.fields
+                'filterable': field.name in self.filter_class.Meta.fields,
+                'params': {
+                    'related_model': self.serialize_model(field.related_model)
+                }
             }, self.get_display_model_fields()),
             'flex_fields': [],
             'relations': map(lambda field: {
