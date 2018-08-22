@@ -1,9 +1,6 @@
-import uuid
-
 from rest_framework.permissions import BasePermission
 
 from jetty import settings
-from jetty.models.token import Token
 from jetty.utils.backend import project_auth
 
 
