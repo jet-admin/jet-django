@@ -5,17 +5,15 @@ from jetty.utils.backend import project_auth
 
 
 class HasProjectPermissions(BasePermission):
-    token_prefix = 'Token '
+    token_prefixes = ['Token ', 'ProjectToken ']
 
     def has_permission(self, request, view):
         token = request.META.get('HTTP_AUTHORIZATION')
 
-        if not token or token[:len(self.token_prefix)] != self.token_prefix:
+        if not token:
             return False
 
-        token = token[len(self.token_prefix):]
-
-        return project_auth(token)
+        return any(map(lambda x: token[:len(x)] == x and project_auth(token[len(x):]), self.token_prefixes))
 
 
 class ModifyNotInDemo(BasePermission):
