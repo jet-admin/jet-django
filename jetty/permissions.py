@@ -23,10 +23,8 @@ class HasProjectPermissions(BasePermission):
             return project_auth(token)
         elif token[:len(self.project_token_prefix)] == self.project_token_prefix:
             token = token[len(self.project_token_prefix):]
-            project_token = Token.objects.all().first()
 
-            return project_token.token == uuid.UUID(token)
-
+            return project_auth(token)
         else:
             return False
 
