@@ -12,7 +12,7 @@ def read(fname):
 
 
 def get_install_requires():
-    install_requires = ['Django']
+    install_requires = ['Django', 'requests']
 
     try:
         from collections import OrderedDict
@@ -22,13 +22,13 @@ def get_install_requires():
     return install_requires
 
 setup(
-    name='jetty-django',
-    version=__import__('jetty').VERSION,
+    name='jet-django',
+    version=__import__('jet_django').VERSION,
     description='',
     long_description=read('README.rst'),
     author='Denis Kildishev',
     author_email='hello@geex-arts.com',
-    url='https://github.com/geex-arts/django-jet',
+    url='https://github.com/jet-admin/jet-django',
     packages=find_packages(),
     license='MIT',
     classifiers=[

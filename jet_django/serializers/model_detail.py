@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from jetty.utils.siblings import get_model_sibling
+from jet_django.utils.siblings import get_model_sibling
 
 
 def model_detail_serializer_factory(build_model, build_fields):

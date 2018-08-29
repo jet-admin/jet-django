@@ -2,7 +2,7 @@ from django import forms
 from django.utils.text import camel_case_to_spaces
 
 
-class JettyAdminModelAction(forms.Form):
+class JetAdminModelAction(forms.Form):
     _ids = forms.CharField(label='object ids')
 
     class Meta:
