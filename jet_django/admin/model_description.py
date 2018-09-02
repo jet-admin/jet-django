@@ -68,6 +68,12 @@ class JetAdminModelDescription(object):
             return False
         return filter(filter_fields, fields)
 
+    def get_model_relation_through(self, field):
+        if isinstance(field, models.ManyToManyRel):
+            return self.serialize_model(field.through)
+        elif isinstance(field, models.ManyToManyField):
+            return self.serialize_model(field.remote_field.through)
+
     def get_display_model_fields(self):
         fields = self.get_model_fields()
         def filter_fields(x):
@@ -104,7 +110,7 @@ class JetAdminModelDescription(object):
                 'related_model': self.serialize_model(field.related_model),
                 'field': field.__class__.__name__,
                 'related_model_field': field.remote_field.name,
-                'through': self.serialize_model(field.through) if isinstance(field, models.ManyToManyRel) else None
+                'through': self.get_model_relation_through(field)
             }, self.get_model_relations()),
             'actions': map(lambda action: {
                 'name': action._meta.name,
