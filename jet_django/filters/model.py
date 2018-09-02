@@ -3,6 +3,7 @@ from functools import reduce
 from collections import OrderedDict
 
 import django_filters
+from django.db import models
 from django.db.models import Q, fields
 from django_filters import filters
 from django_filters.constants import EMPTY_VALUES
@@ -11,7 +12,7 @@ from django_filters.utils import resolve_field, get_model_field
 from django_filters.filterset import get_filter_name
 
 
-def model_filter_class_factory(build_model, model_fields):
+def model_filter_class_factory(build_model, model_fields, model_relations):
     model_fields = list(model_fields)
 
     def filter_field(field):
@@ -43,9 +44,38 @@ def model_filter_class_factory(build_model, model_fields):
 
             return qs
 
+    class M2MFilter(django_filters.CharFilter):
+
+        def filter(self, qs, value):
+            if value in EMPTY_VALUES:
+                return qs
+
+            params = value.split(',', 2)
+
+            if len(params) < 2:
+                return qs.none()
+
+            relation_name, value = params
+            relations = list(filter(lambda x: x.name == relation_name, model_relations))
+
+            if len(relations) == 0:
+                return qs.none()
+
+            relation = relations[0]
+
+            if isinstance(relation, models.ManyToManyRel):
+                query = {'{}__pk'.format(relation_name): value}
+                qs = qs.filter(**query)
+            elif isinstance(relation, models.ManyToManyField):
+                query = {'{}__pk'.format(relation_name): value}
+                qs = qs.filter(**query)
+
+            return qs
+
     class FilterSet(django_filters.FilterSet):
         _order_by = filters.OrderingFilter(fields=filter_field_names)
         _search = SearchFilter()
+        _m2m = M2MFilter()
 
         class Meta:
             model = build_model

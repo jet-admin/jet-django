@@ -24,7 +24,7 @@ class JetAdminModelDescription(object):
         self.field_names = list(map(lambda x: x.name, self.get_display_model_fields()))
         self.serializer = model_serializer_factory(Model, self.field_names)
         self.detail_serializer = model_detail_serializer_factory(Model, self.field_names)
-        self.filter_class = model_filter_class_factory(Model, self.get_display_model_fields())
+        self.filter_class = model_filter_class_factory(Model, self.get_display_model_fields(), self.get_model_relations())
         self.queryset = Model.objects.all()
         self.viewset = model_viewset_factory(
             Model,
@@ -66,7 +66,7 @@ class JetAdminModelDescription(object):
             ])):
                 return True
             return False
-        return filter(filter_fields, fields)
+        return list(filter(filter_fields, fields))
 
     def get_model_relation_through(self, field):
         if isinstance(field, models.ManyToManyRel):
