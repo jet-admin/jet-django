@@ -27,7 +27,7 @@ class SqlView(views.APIView):
     permission_classes = (HasProjectPermissions,)
 
     def post(self, request, *args, **kwargs):
-        serializer = SqlSerializer(data=request.POST)
+        serializer = SqlSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         with connection.cursor() as cursor:
