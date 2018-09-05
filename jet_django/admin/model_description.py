@@ -1,4 +1,4 @@
-from django.contrib.contenttypes.fields import GenericRel, GenericForeignKey
+from django.contrib.contenttypes.fields import GenericRel, GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
@@ -51,7 +51,8 @@ class JetAdminModelDescription(object):
                 models.ManyToManyField,
                 models.ManyToManyRel,
                 GenericRel,
-                GenericForeignKey
+                GenericForeignKey,
+                GenericRelation
             ])):
                 return False
             return True
