@@ -19,7 +19,7 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
         try:
             django_filters.FilterSet.filter_for_field(field, field.name)
             return True
-        except AssertionError:
+        except:
             return False
 
     def search_field(field):
