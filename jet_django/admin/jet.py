@@ -1,7 +1,6 @@
 from jet_django.admin.model_description import JetAdminModelDescription
 from rest_framework import views
 from rest_framework.response import Response
-from django.apps import apps
 
 from jet_django.permissions import HasProjectPermissions
 
@@ -43,8 +42,3 @@ class JetAdmin(object):
                 registered.add(key)
 
 jet = JetAdmin()
-
-models = apps.get_models()
-
-for model in models:
-    jet.register(model)
