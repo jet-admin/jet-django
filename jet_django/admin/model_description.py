@@ -98,6 +98,7 @@ class JetAdminModelDescription(object):
             'hidden': self.hidden,
             'fields': map(lambda field: {
                 'name': field.name,
+                'db_column': field.get_attname_column()[1],
                 'verbose_name': field.verbose_name,
                 'is_relation': field.is_relation,
                 'field': field.__class__.__name__,
