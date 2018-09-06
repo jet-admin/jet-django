@@ -80,6 +80,20 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
         class Meta:
             model = build_model
             fields = filter_fields
+            filter_overrides = {
+                models.DateTimeField: {
+                    'filter_class': filters.DateTimeFilter,
+                    'extra': lambda f: {
+                        'input_formats': ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
+                    }
+                },
+                models.DateField: {
+                    'filter_class': filters.DateFilter,
+                    'extra': lambda f: {
+                        'input_formats': ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
+                    }
+                },
+            }
 
         @classmethod
         def get_filters(cls):
@@ -134,7 +148,6 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
             filters.update(cls.declared_filters)
             return filters
 
-
         @classmethod
         def filter_for_field(cls, f, name, lookup_expr='exact', exclude=False):
             f, lookup_type = resolve_field(f, lookup_expr)
@@ -155,5 +168,8 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
                                              ) % (cls.__name__, name, lookup_expr, f.__class__.__name__)
 
             return filter_class(**default)
+    # 'date_joined__lte', <django_filters.filters.DateTimeFilter object at 0x1112d6588>
+    print('test', FilterSet.base_filters)
+    django_filters.filters.DateTimeFilter
 
     return FilterSet
