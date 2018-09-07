@@ -168,8 +168,5 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
                                              ) % (cls.__name__, name, lookup_expr, f.__class__.__name__)
 
             return filter_class(**default)
-    # 'date_joined__lte', <django_filters.filters.DateTimeFilter object at 0x1112d6588>
-    print('test', FilterSet.base_filters)
-    django_filters.filters.DateTimeFilter
 
     return FilterSet
