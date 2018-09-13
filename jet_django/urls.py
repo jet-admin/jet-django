@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from jet_django.admin.jet import jet
 from jet_django.views.dashboard import DashboardViewSet
+from jet_django.views.file_upload import FileUploadView
 from jet_django.views.menu_settings import MenuSettingsViewSet
 from jet_django.views.model_description import ModelDescriptionViewSet
 from jet_django.views.register import RegisterView
@@ -31,7 +32,8 @@ def init_urls():
     extra_urls = [
         url(r'^model_descriptions_base/', jet.models_view().as_view(), name='model-descriptions'),
         url(r'^register/', RegisterView.as_view(), name='register'),
-        url(r'^sql/', SqlView.as_view(), name='sql')
+        url(r'^sql/', SqlView.as_view(), name='sql'),
+        url(r'^file_upload/', FileUploadView.as_view(), name='file-upload')
     ]
 
     api_urls = router.urls + extra_urls
