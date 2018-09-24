@@ -18,5 +18,8 @@ JET_REST_FRAMEWORK = getattr(settings, 'JET_REST_FRAMEWORK', {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '120/minute',
         'user': '480/minute'
-    }
+    },
+    'DEFAULT_RENDERER_CLASSES': (
+        'jet_django.deps.rest_framework.renderers.JSONRenderer',
+    )
 })
