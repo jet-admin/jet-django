@@ -16,11 +16,11 @@
 
       {% block style %}
         {% block bootstrap_theme %}
-          <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/bootstrap.min.css" %}"/>
-          <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/bootstrap-tweaks.css" %}"/>
+          <link rel="stylesheet" type="text/css" href="{% static "jet_django.deps.rest_framework/css/bootstrap.min.css" %}"/>
+          <link rel="stylesheet" type="text/css" href="{% static "jet_django.deps.rest_framework/css/bootstrap-tweaks.css" %}"/>
         {% endblock %}
-        <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/prettify.css" %}"/>
-        <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/default.css" %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static "jet_django.deps.rest_framework/css/prettify.css" %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static "jet_django.deps.rest_framework/css/default.css" %}"/>
       {% endblock %}
 
     {% endblock %}
@@ -136,9 +136,9 @@
 
               <div class="request-info" style="clear: both" >
                 {% if style == 'list' %}
-                  {% include "rest_framework/admin/list.html" %}
+                  {% include "jet_django.deps.rest_framework/admin/list.html" %}
                 {% else %}
-                  {% include "rest_framework/admin/detail.html" %}
+                  {% include "jet_django.deps.rest_framework/admin/detail.html" %}
                 {% endif %}
               </div>
 
@@ -236,12 +236,12 @@
             csrfCookieName: "{{ csrf_cookie_name|default:'csrftoken' }}"
           };
         </script>
-        <script src="{% static "rest_framework/js/jquery-1.12.4.min.js" %}"></script>
-        <script src="{% static "rest_framework/js/ajax-form.js" %}"></script>
-        <script src="{% static "rest_framework/js/csrf.js" %}"></script>
-        <script src="{% static "rest_framework/js/bootstrap.min.js" %}"></script>
-        <script src="{% static "rest_framework/js/prettify-min.js" %}"></script>
-        <script src="{% static "rest_framework/js/default.js" %}"></script>
+        <script src="{% static "jet_django.deps.rest_framework/js/jquery-1.12.4.min.js" %}"></script>
+        <script src="{% static "jet_django.deps.rest_framework/js/ajax-form.js" %}"></script>
+        <script src="{% static "jet_django.deps.rest_framework/js/csrf.js" %}"></script>
+        <script src="{% static "jet_django.deps.rest_framework/js/bootstrap.min.js" %}"></script>
+        <script src="{% static "jet_django.deps.rest_framework/js/prettify-min.js" %}"></script>
+        <script src="{% static "jet_django.deps.rest_framework/js/default.js" %}"></script>
         <script>
           $(document).ready(function() {
             $('form').ajaxForm();

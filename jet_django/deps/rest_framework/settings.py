@@ -4,12 +4,12 @@ For example your project's `settings.py` file might look like this:
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.TemplateHTMLRenderer',
+        'jet_django.deps.rest_framework.renderers.JSONRenderer',
+        'jet_django.deps.rest_framework.renderers.TemplateHTMLRenderer',
     )
     'DEFAULT_PARSER_CLASSES': (
-        'rest_framework.parsers.JSONParser',
-        'rest_framework.parsers.TemplateHTMLRenderer',
+        'jet_django.deps.rest_framework.parsers.JSONParser',
+        'jet_django.deps.rest_framework.parsers.TemplateHTMLRenderer',
     )
 }
 
@@ -29,28 +29,28 @@ from jet_django.deps.rest_framework import ISO_8601
 DEFAULTS = {
     # Base API policies
     'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
+        'jet_django.deps.rest_framework.renderers.JSONRenderer',
+        'jet_django.deps.rest_framework.renderers.BrowsableAPIRenderer',
     ),
     'DEFAULT_PARSER_CLASSES': (
-        'rest_framework.parsers.JSONParser',
-        'rest_framework.parsers.FormParser',
-        'rest_framework.parsers.MultiPartParser'
+        'jet_django.deps.rest_framework.parsers.JSONParser',
+        'jet_django.deps.rest_framework.parsers.FormParser',
+        'jet_django.deps.rest_framework.parsers.MultiPartParser'
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication'
+        'jet_django.deps.rest_framework.authentication.SessionAuthentication',
+        'jet_django.deps.rest_framework.authentication.BasicAuthentication'
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.AllowAny',
+        'jet_django.deps.rest_framework.permissions.AllowAny',
     ),
     'DEFAULT_THROTTLE_CLASSES': (),
-    'DEFAULT_CONTENT_NEGOTIATION_CLASS': 'rest_framework.negotiation.DefaultContentNegotiation',
-    'DEFAULT_METADATA_CLASS': 'rest_framework.metadata.SimpleMetadata',
+    'DEFAULT_CONTENT_NEGOTIATION_CLASS': 'jet_django.deps.rest_framework.negotiation.DefaultContentNegotiation',
+    'DEFAULT_METADATA_CLASS': 'jet_django.deps.rest_framework.metadata.SimpleMetadata',
     'DEFAULT_VERSIONING_CLASS': None,
 
     # Generic view behavior
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'jet_django.deps.rest_framework.pagination.PageNumberPagination',
     'DEFAULT_FILTER_BACKENDS': (),
 
     # Throttling
@@ -77,17 +77,17 @@ DEFAULTS = {
     'UNAUTHENTICATED_TOKEN': None,
 
     # View configuration
-    'VIEW_NAME_FUNCTION': 'rest_framework.views.get_view_name',
-    'VIEW_DESCRIPTION_FUNCTION': 'rest_framework.views.get_view_description',
+    'VIEW_NAME_FUNCTION': 'jet_django.deps.rest_framework.views.get_view_name',
+    'VIEW_DESCRIPTION_FUNCTION': 'jet_django.deps.rest_framework.views.get_view_description',
 
     # Exception handling
-    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
+    'EXCEPTION_HANDLER': 'jet_django.deps.rest_framework.views.exception_handler',
     'NON_FIELD_ERRORS_KEY': 'non_field_errors',
 
     # Testing
     'TEST_REQUEST_RENDERER_CLASSES': (
-        'rest_framework.renderers.MultiPartRenderer',
-        'rest_framework.renderers.JSONRenderer'
+        'jet_django.deps.rest_framework.renderers.MultiPartRenderer',
+        'jet_django.deps.rest_framework.renderers.JSONRenderer'
     ),
     'TEST_REQUEST_DEFAULT_FORMAT': 'multipart',
 
@@ -237,7 +237,7 @@ api_settings = APISettings(None, DEFAULTS, IMPORT_STRINGS)
 def reload_api_settings(*args, **kwargs):
     global api_settings
     setting, value = kwargs['setting'], kwargs['value']
-    if setting == 'REST_FRAMEWORK':
+    if setting == 'jet_django.deps.rest_framework':
         api_settings = APISettings(value, DEFAULTS, IMPORT_STRINGS)
 
 

@@ -8,9 +8,9 @@
     {% endif %}
 </div>
 <div class="col-md-6 intro-code">
-    {% if 'shell' in langs %}{% include "rest_framework/docs/langs/shell-intro.html" %}{% endif %}
-    {% if 'python' in langs %}{% include "rest_framework/docs/langs/python-intro.html" %}{% endif %}
-    {% if 'javascript' in langs %}{% include "rest_framework/docs/langs/javascript-intro.html" %}{% endif %}
+    {% if 'shell' in langs %}{% include "jet_django.deps.rest_framework/docs/langs/shell-intro.html" %}{% endif %}
+    {% if 'python' in langs %}{% include "jet_django.deps.rest_framework/docs/langs/python-intro.html" %}{% endif %}
+    {% if 'javascript' in langs %}{% include "jet_django.deps.rest_framework/docs/langs/javascript-intro.html" %}{% endif %}
 </div>
 </div>
 
@@ -21,10 +21,10 @@
 {% endif %}
 
     {% for link_key, link in section.links.items %}
-        {% include "rest_framework/docs/link.html" %}
+        {% include "jet_django.deps.rest_framework/docs/link.html" %}
     {% endfor %}
 {% endfor %}
 
 {% for link_key, link in document.links.items %}
-    {% include "rest_framework/docs/link.html" %}
+    {% include "jet_django.deps.rest_framework/docs/link.html" %}
 {% endfor %}

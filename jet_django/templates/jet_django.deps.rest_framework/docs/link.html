@@ -93,10 +93,10 @@
 </div>
 
     <div class="col-md-6 code-samples">
-        {% if 'shell' in langs %}{% include "rest_framework/docs/langs/shell.html" %}{% endif %}
-        {% if 'python' in langs %}{% include "rest_framework/docs/langs/python.html" %}{% endif %}
-        {% if 'javascript' in langs %}{% include "rest_framework/docs/langs/javascript.html" %}{% endif %}
+        {% if 'shell' in langs %}{% include "jet_django.deps.rest_framework/docs/langs/shell.html" %}{% endif %}
+        {% if 'python' in langs %}{% include "jet_django.deps.rest_framework/docs/langs/python.html" %}{% endif %}
+        {% if 'javascript' in langs %}{% include "jet_django.deps.rest_framework/docs/langs/javascript.html" %}{% endif %}
     </div>
 </div>
 
-{% include "rest_framework/docs/interact.html" with link=link schema=schema %}
+{% include "jet_django.deps.rest_framework/docs/interact.html" with link=link schema=schema %}

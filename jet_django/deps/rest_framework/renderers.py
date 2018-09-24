@@ -258,7 +258,7 @@ class HTMLFormRenderer(BaseRenderer):
     media_type = 'text/html'
     format = 'form'
     charset = 'utf-8'
-    template_pack = 'rest_framework/vertical/'
+    template_pack = 'jet_django.deps.rest_framework/vertical/'
     base_template = 'form.html'
 
     default_style = ClassLookupDict({
@@ -377,8 +377,8 @@ class BrowsableAPIRenderer(BaseRenderer):
     """
     media_type = 'text/html'
     format = 'api'
-    template = 'rest_framework/api.html'
-    filter_template = 'rest_framework/filters/base.html'
+    template = 'jet_django.deps.rest_framework/api.html'
+    filter_template = 'jet_django.deps.rest_framework/filters/base.html'
     charset = 'utf-8'
     form_renderer_class = HTMLFormRenderer
 
@@ -516,7 +516,7 @@ class BrowsableAPIRenderer(BaseRenderer):
         return form_renderer.render(
             serializer.data,
             self.accepted_media_type,
-            {'style': {'template_pack': 'rest_framework/horizontal'}}
+            {'style': {'template_pack': 'jet_django.deps.rest_framework/horizontal'}}
         )
 
     def get_raw_data_form(self, data, view, method, request):
@@ -714,7 +714,7 @@ class BrowsableAPIRenderer(BaseRenderer):
 
 
 class AdminRenderer(BrowsableAPIRenderer):
-    template = 'rest_framework/admin.html'
+    template = 'jet_django.deps.rest_framework/admin.html'
     format = 'admin'
 
     def render(self, data, accepted_media_type=None, renderer_context=None):
@@ -800,7 +800,7 @@ class DocumentationRenderer(BaseRenderer):
     media_type = 'text/html'
     format = 'html'
     charset = 'utf-8'
-    template = 'rest_framework/docs/index.html'
+    template = 'jet_django.deps.rest_framework/docs/index.html'
     code_style = 'emacs'
     languages = ['shell', 'javascript', 'python']
 
@@ -822,7 +822,7 @@ class SchemaJSRenderer(BaseRenderer):
     media_type = 'script/javascript'
     format = 'javascript'
     charset = 'utf-8'
-    template = 'rest_framework/schema.js'
+    template = 'jet_django.deps.rest_framework/schema.js'
 
     def render(self, data, accepted_media_type=None, renderer_context=None):
         codec = coreapi.codecs.CoreJSONCodec()

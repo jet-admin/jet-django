@@ -16,12 +16,12 @@
 
       {% block style %}
         {% block bootstrap_theme %}
-          <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/bootstrap.min.css" %}"/>
-          <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/bootstrap-tweaks.css" %}"/>
+          <link rel="stylesheet" type="text/css" href="{% static "jet_django.deps.rest_framework/css/bootstrap.min.css" %}"/>
+          <link rel="stylesheet" type="text/css" href="{% static "jet_django.deps.rest_framework/css/bootstrap-tweaks.css" %}"/>
         {% endblock %}
 
-        <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/prettify.css" %}"/>
-        <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/default.css" %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static "jet_django.deps.rest_framework/css/prettify.css" %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static "jet_django.deps.rest_framework/css/default.css" %}"/>
       {% endblock %}
 
     {% endblock %}
@@ -192,7 +192,7 @@
                       {% with form=raw_data_post_form %}
                         <form action="{{ request.get_full_path }}" method="POST" class="form-horizontal">
                           <fieldset>
-                            {% include "rest_framework/raw_data_form.html" %}
+                            {% include "jet_django.deps.rest_framework/raw_data_form.html" %}
                             <div class="form-actions">
                               <button class="btn btn-primary" title="Make a POST request on the {{ name }} resource">POST</button>
                             </div>
@@ -235,7 +235,7 @@
                       {% with form=raw_data_put_or_patch_form %}
                         <form action="{{ request.get_full_path }}" data-method="PUT" class="form-horizontal">
                           <fieldset>
-                            {% include "rest_framework/raw_data_form.html" %}
+                            {% include "jet_django.deps.rest_framework/raw_data_form.html" %}
                             <div class="form-actions">
                               {% if raw_data_put_form %}
                                 <button class="btn btn-primary js-tooltip" title="Make a PUT request on the {{ name }} resource">PUT</button>
@@ -267,12 +267,12 @@
           csrfCookieName: "{{ csrf_cookie_name|default:'csrftoken' }}"
         };
       </script>
-      <script src="{% static "rest_framework/js/jquery-1.12.4.min.js" %}"></script>
-      <script src="{% static "rest_framework/js/ajax-form.js" %}"></script>
-      <script src="{% static "rest_framework/js/csrf.js" %}"></script>
-      <script src="{% static "rest_framework/js/bootstrap.min.js" %}"></script>
-      <script src="{% static "rest_framework/js/prettify-min.js" %}"></script>
-      <script src="{% static "rest_framework/js/default.js" %}"></script>
+      <script src="{% static "jet_django.deps.rest_framework/js/jquery-1.12.4.min.js" %}"></script>
+      <script src="{% static "jet_django.deps.rest_framework/js/ajax-form.js" %}"></script>
+      <script src="{% static "jet_django.deps.rest_framework/js/csrf.js" %}"></script>
+      <script src="{% static "jet_django.deps.rest_framework/js/bootstrap.min.js" %}"></script>
+      <script src="{% static "jet_django.deps.rest_framework/js/prettify-min.js" %}"></script>
+      <script src="{% static "jet_django.deps.rest_framework/js/default.js" %}"></script>
       <script>
         $(document).ready(function() {
           $('form').ajaxForm();

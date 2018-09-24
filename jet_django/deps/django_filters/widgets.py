@@ -87,7 +87,7 @@ class LinkWidget(forms.Widget):
 
 
 class RangeWidget(forms.MultiWidget):
-    template_name = 'django_filters/widgets/multiwidget.html'
+    template_name = 'jet_django.deps.django_filters/widgets/multiwidget.html'
 
     def __init__(self, attrs=None):
         widgets = (forms.TextInput, forms.TextInput)

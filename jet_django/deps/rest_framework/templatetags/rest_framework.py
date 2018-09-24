@@ -97,7 +97,7 @@ def optional_login(request):
     Include a login snippet if REST framework's login view is in the URLconf.
     """
     try:
-        login_url = reverse('rest_framework:login')
+        login_url = reverse('jet_django.deps.rest_framework:login')
     except NoReverseMatch:
         return ''
 
@@ -113,7 +113,7 @@ def optional_docs_login(request):
     Include a login snippet if REST framework's login view is in the URLconf.
     """
     try:
-        login_url = reverse('rest_framework:login')
+        login_url = reverse('jet_django.deps.rest_framework:login')
     except NoReverseMatch:
         return 'log in'
 
@@ -129,7 +129,7 @@ def optional_logout(request, user):
     Include a logout snippet if REST framework's logout view is in the URLconf.
     """
     try:
-        logout_url = reverse('rest_framework:logout')
+        logout_url = reverse('jet_django.deps.rest_framework:logout')
     except NoReverseMatch:
         snippet = format_html('<li class="navbar-text">{user}</li>', user=escape(user))
         return mark_safe(snippet)
@@ -211,13 +211,13 @@ def format_value(value):
         return mark_safe('<code>%s</code>' % {True: 'true', False: 'false', None: 'null'}[value])
     elif isinstance(value, list):
         if any([isinstance(item, (list, dict)) for item in value]):
-            template = loader.get_template('rest_framework/admin/list_value.html')
+            template = loader.get_template('jet_django.deps.rest_framework/admin/list_value.html')
         else:
-            template = loader.get_template('rest_framework/admin/simple_list_value.html')
+            template = loader.get_template('jet_django.deps.rest_framework/admin/simple_list_value.html')
         context = {'value': value}
         return template_render(template, context)
     elif isinstance(value, dict):
-        template = loader.get_template('rest_framework/admin/dict_value.html')
+        template = loader.get_template('jet_django.deps.rest_framework/admin/dict_value.html')
         context = {'value': value}
         return template_render(template, context)
     elif isinstance(value, six.string_types):

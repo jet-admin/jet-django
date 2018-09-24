@@ -1,4 +1,4 @@
-{% extends "rest_framework/base.html" %}
+{% extends "jet_django.deps.rest_framework/base.html" %}
 {% load staticfiles %}
 {% load rest_framework %}
 
@@ -15,7 +15,7 @@
 
         <div class="row-fluid">
           <div>
-            <form action="{% url 'rest_framework:login' %}" role="form" method="post">
+            <form action="{% url 'jet_django.deps.rest_framework:login' %}" role="form" method="post">
               {% csrf_token %}
               <input type="hidden" name="next" value="{{ next }}" />
 

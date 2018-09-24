@@ -45,7 +45,7 @@ if django_filters:
     class FilterSet(DFFilterSet):
         def __init__(self, *args, **kwargs):
             warnings.warn(
-                "The built in 'rest_framework.filters.FilterSet' is deprecated. "
+                "The built in 'jet_django.deps.rest_framework.filters.FilterSet' is deprecated. "
                 "You should use 'django_filters.rest_framework.FilterSet' instead.",
                 DeprecationWarning
             )
@@ -64,7 +64,7 @@ class DjangoFilterBackend(BaseFilterBackend):
         assert django_filters.VERSION >= (0, 15, 3), 'django-filter 0.15.3 and above is required'
 
         warnings.warn(
-            "The built in 'rest_framework.filters.DjangoFilterBackend' is deprecated. "
+            "The built in 'jet_django.deps.rest_framework.filters.DjangoFilterBackend' is deprecated. "
             "You should use 'django_filters.rest_framework.DjangoFilterBackend' instead.",
             DeprecationWarning
         )
@@ -77,7 +77,7 @@ class DjangoFilterBackend(BaseFilterBackend):
 class SearchFilter(BaseFilterBackend):
     # The URL query parameter used for the search.
     search_param = api_settings.SEARCH_PARAM
-    template = 'rest_framework/filters/search.html'
+    template = 'jet_django.deps.rest_framework/filters/search.html'
     lookup_prefixes = {
         '^': 'istartswith',
         '=': 'iexact',
@@ -186,7 +186,7 @@ class OrderingFilter(BaseFilterBackend):
     ordering_fields = None
     ordering_title = _('Ordering')
     ordering_description = _('Which field to use when ordering the results.')
-    template = 'rest_framework/filters/ordering.html'
+    template = 'jet_django.deps.rest_framework/filters/ordering.html'
 
     def get_ordering(self, request, queryset, view):
         """

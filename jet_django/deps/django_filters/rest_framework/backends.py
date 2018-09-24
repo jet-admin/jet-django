@@ -15,8 +15,8 @@ class DjangoFilterBackend(object):
     @property
     def template(self):
         if compat.is_crispy():
-            return 'django_filters/rest_framework/crispy_form.html'
-        return 'django_filters/rest_framework/form.html'
+            return 'jet_django.deps.django_filters/rest_framework/crispy_form.html'
+        return 'jet_django.deps.django_filters/rest_framework/form.html'
 
     def get_filter_class(self, view, queryset=None):
         """
