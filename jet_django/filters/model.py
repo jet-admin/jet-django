@@ -2,14 +2,14 @@ from __future__ import absolute_import, unicode_literals
 from functools import reduce
 from collections import OrderedDict
 
-import django_filters
+from jet_django.deps import django_filters
 from django.db import models
 from django.db.models import Q, fields
-from django_filters import filters
-from django_filters.constants import EMPTY_VALUES
+from jet_django.deps.django_filters import filters
+from jet_django.deps.django_filters.constants import EMPTY_VALUES
 from django.db.models.fields.related import ForeignObjectRel
-from django_filters.utils import resolve_field, get_model_field
-from django_filters.filterset import get_filter_name
+from jet_django.deps.django_filters.utils import resolve_field, get_model_field
+from jet_django.deps.django_filters.filterset import get_filter_name
 
 
 def model_filter_class_factory(build_model, model_fields, model_relations):
@@ -19,7 +19,7 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
         try:
             django_filters.FilterSet.filter_for_field(field, field.name)
             return True
-        except AssertionError:
+        except:
             return False
 
     def search_field(field):
@@ -80,6 +80,20 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
         class Meta:
             model = build_model
             fields = filter_fields
+            filter_overrides = {
+                models.DateTimeField: {
+                    'filter_class': filters.DateTimeFilter,
+                    'extra': lambda f: {
+                        'input_formats': ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
+                    }
+                },
+                models.DateField: {
+                    'filter_class': filters.DateFilter,
+                    'extra': lambda f: {
+                        'input_formats': ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
+                    }
+                },
+            }
 
         @classmethod
         def get_filters(cls):
@@ -133,7 +147,6 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
             # declared filters to the 'Meta.fields' option
             filters.update(cls.declared_filters)
             return filters
-
 
         @classmethod
         def filter_for_field(cls, f, name, lookup_expr='exact', exclude=False):

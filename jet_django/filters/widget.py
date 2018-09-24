@@ -1,4 +1,4 @@
-import django_filters
+from jet_django.deps import django_filters
 
 from jet_django.models.widget import Widget
 

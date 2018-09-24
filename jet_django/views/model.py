@@ -1,8 +1,8 @@
 from django.core.exceptions import NON_FIELD_ERRORS
-from rest_framework import status, viewsets, serializers
-from rest_framework.decorators import list_route
-from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
+from jet_django.deps.rest_framework import status, viewsets, serializers
+from jet_django.deps.rest_framework.decorators import list_route
+from jet_django.deps.rest_framework.response import Response
+from jet_django.deps.rest_framework.serializers import ModelSerializer
 
 from jet_django.filters.model_aggregate import AggregateFilter
 from jet_django.filters.model_group import GroupFilter
@@ -124,7 +124,6 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
             """
             serializer_class = self.get_serializer_class()
             kwargs['context'] = self.get_serializer_context()
-            # print(2, args, kwargs)
             return serializer_class(*args, **kwargs)
 
         @list_route(methods=['post'])

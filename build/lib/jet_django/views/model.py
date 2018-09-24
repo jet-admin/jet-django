@@ -124,7 +124,6 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
             """
             serializer_class = self.get_serializer_class()
             kwargs['context'] = self.get_serializer_context()
-            # print(2, args, kwargs)
             return serializer_class(*args, **kwargs)
 
         @list_route(methods=['post'])

@@ -1,5 +1,5 @@
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
+from jet_django.deps.rest_framework import serializers
+from jet_django.deps.rest_framework.exceptions import ValidationError
 
 
 class SqlSerializer(serializers.Serializer):

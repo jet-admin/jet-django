@@ -1,5 +1,5 @@
 from django.db import transaction
-from rest_framework import serializers
+from jet_django.deps.rest_framework import serializers
 
 from jet_django.models.dashboard import Dashboard
 from jet_django.models.widget import Widget

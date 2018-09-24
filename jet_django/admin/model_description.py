@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.fields import GenericRel, GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
@@ -48,7 +49,10 @@ class JetAdminModelDescription(object):
                 models.OneToOneField,
                 models.ManyToOneRel,
                 models.ManyToManyField,
-                models.ManyToManyRel
+                models.ManyToManyRel,
+                GenericRel,
+                GenericForeignKey,
+                GenericRelation
             ])):
                 return False
             return True
@@ -94,6 +98,7 @@ class JetAdminModelDescription(object):
             'hidden': self.hidden,
             'fields': map(lambda field: {
                 'name': field.name,
+                'db_column': field.get_attname_column()[1],
                 'verbose_name': field.verbose_name,
                 'is_relation': field.is_relation,
                 'field': field.__class__.__name__,
