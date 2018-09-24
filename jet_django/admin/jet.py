@@ -1,6 +1,6 @@
 from jet_django.admin.model_description import JetAdminModelDescription
-from rest_framework import views
-from rest_framework.response import Response
+from jet_django.deps.rest_framework import views
+from jet_django.deps.rest_framework.response import Response
 
 from jet_django.permissions import HasProjectPermissions
 

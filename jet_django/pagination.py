@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.response import Response
+from jet_django.deps.rest_framework.pagination import PageNumberPagination
+from jet_django.deps.rest_framework.response import Response
 
 
 class CustomPageNumberPagination(PageNumberPagination):

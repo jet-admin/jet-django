@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from jet_django.deps.rest_framework import viewsets
 
 from jet_django.filters.widget import WidgetFilterSet
 from jet_django.models.widget import Widget

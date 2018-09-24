@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.db.models import F
-from rest_framework import serializers, relations
+from jet_django.deps.rest_framework import serializers, relations
 
 
 def reorder_serializer_factory(build_queryset, ordering_field):

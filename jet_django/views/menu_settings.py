@@ -1,6 +1,6 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets
+from jet_django.deps.rest_framework import viewsets
 
 from jet_django.models.menu_item import MenuSettings
 from jet_django.permissions import HasProjectPermissions

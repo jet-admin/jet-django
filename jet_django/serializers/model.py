@@ -1,5 +1,5 @@
 from django.db import models
-from rest_framework import serializers
+from jet_django.deps.rest_framework import serializers
 
 from jet_django.fields.raw_file import RawFileField
 

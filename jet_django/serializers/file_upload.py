@@ -3,7 +3,7 @@ import os
 from django.core.exceptions import SuspiciousFileOperation, ValidationError
 from django.core.files.storage import default_storage
 from django.utils.translation import ugettext_lazy as _
-from rest_framework import serializers
+from jet_django.deps.rest_framework import serializers
 
 
 class FileUploadSerializer(serializers.Serializer):

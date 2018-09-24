@@ -1,6 +1,6 @@
-from rest_framework import viewsets
-from rest_framework.decorators import detail_route
-from rest_framework.response import Response
+from jet_django.deps.rest_framework import viewsets
+from jet_django.deps.rest_framework.decorators import detail_route
+from jet_django.deps.rest_framework.response import Response
 
 from jet_django.models.dashboard import Dashboard
 from jet_django.permissions import HasProjectPermissions

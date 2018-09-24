@@ -2,14 +2,14 @@ from __future__ import absolute_import, unicode_literals
 from functools import reduce
 from collections import OrderedDict
 
-import django_filters
+from jet_django.deps import django_filters
 from django.db import models
 from django.db.models import Q, fields
-from django_filters import filters
-from django_filters.constants import EMPTY_VALUES
+from jet_django.deps.django_filters import filters
+from jet_django.deps.django_filters.constants import EMPTY_VALUES
 from django.db.models.fields.related import ForeignObjectRel
-from django_filters.utils import resolve_field, get_model_field
-from django_filters.filterset import get_filter_name
+from jet_django.deps.django_filters.utils import resolve_field, get_model_field
+from jet_django.deps.django_filters.filterset import get_filter_name
 
 
 def model_filter_class_factory(build_model, model_fields, model_relations):

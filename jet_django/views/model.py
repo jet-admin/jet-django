@@ -1,8 +1,8 @@
 from django.core.exceptions import NON_FIELD_ERRORS
-from rest_framework import status, viewsets, serializers
-from rest_framework.decorators import list_route
-from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
+from jet_django.deps.rest_framework import status, viewsets, serializers
+from jet_django.deps.rest_framework.decorators import list_route
+from jet_django.deps.rest_framework.response import Response
+from jet_django.deps.rest_framework.serializers import ModelSerializer
 
 from jet_django.filters.model_aggregate import AggregateFilter
 from jet_django.filters.model_group import GroupFilter
