@@ -1,4 +1,4 @@
-from rest_framework.permissions import BasePermission
+from jet_django.deps.rest_framework.permissions import BasePermission
 
 from jet_django import settings
 from jet_django.utils.backend import project_auth

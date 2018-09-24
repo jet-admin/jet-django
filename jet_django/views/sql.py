@@ -1,9 +1,9 @@
 from django.db import connection, ProgrammingError
 from django.utils.translation import ugettext_lazy as _
 from django.utils import six
-from rest_framework import views, status
-from rest_framework.exceptions import APIException
-from rest_framework.response import Response
+from jet_django.deps.rest_framework import views, status
+from jet_django.deps.rest_framework.exceptions import APIException
+from jet_django.deps.rest_framework.response import Response
 
 from jet_django.permissions import HasProjectPermissions
 from jet_django.serializers.sql import SqlSerializer

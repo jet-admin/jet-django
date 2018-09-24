@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from jet_django.deps.rest_framework import serializers
 
 from jet_django.utils.siblings import get_model_sibling
 

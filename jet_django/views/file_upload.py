@@ -1,5 +1,5 @@
-from rest_framework import views
-from rest_framework.response import Response
+from jet_django.deps.rest_framework import views
+from jet_django.deps.rest_framework.response import Response
 
 from jet_django.permissions import HasProjectPermissions
 from jet_django.serializers.file_upload import FileUploadSerializer

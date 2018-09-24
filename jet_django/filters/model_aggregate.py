@@ -1,6 +1,6 @@
-import django_filters
+from jet_django.deps import django_filters
 from django.db.models import Count, Sum, Min, Max, Avg
-from django_filters.constants import EMPTY_VALUES
+from jet_django.deps.django_filters.constants import EMPTY_VALUES
 
 
 class AggregateFilter(django_filters.CharFilter):

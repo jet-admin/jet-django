@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from jet_django.deps.rest_framework import serializers
 
 from jet_django.models.dashboard import Dashboard
 from jet_django.serializers.widget_list import WidgetListSerializer

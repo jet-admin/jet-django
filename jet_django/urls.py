@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from rest_framework.routers import DefaultRouter
+from jet_django.deps.rest_framework.routers import DefaultRouter
 
 from jet_django.admin.jet import jet
 from jet_django.views.dashboard import DashboardViewSet
