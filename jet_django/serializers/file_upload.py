@@ -11,6 +11,7 @@ class FileUploadSerializer(serializers.Serializer):
     path = serializers.CharField(write_only=True)
     filename = serializers.CharField(write_only=True, required=False)
     uploaded_path = serializers.CharField(read_only=True)
+    uploaded_url = serializers.CharField(read_only=True)
 
     def validate(self, attrs):
         if attrs.get('filename') is None:
@@ -26,8 +27,10 @@ class FileUploadSerializer(serializers.Serializer):
         return attrs
 
     def save(self, **kwargs):
+        request = self.context.get('request', None)
         uploaded_path = default_storage.save(self.validated_data['full_path'], self.validated_data['file'])
 
         self.instance = {
-            'uploaded_path': uploaded_path
+            'uploaded_path': uploaded_path,
+            'uploaded_url': request.build_absolute_uri(default_storage.url(uploaded_path))
         }

@@ -11,7 +11,7 @@ class FileUploadView(views.APIView):
     permission_classes = (HasProjectPermissions,)
 
     def post(self, request, *args, **kwargs):
-        serializer = FileUploadSerializer(data=request.data)
+        serializer = FileUploadSerializer(data=request.data, context={'request': self.request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
