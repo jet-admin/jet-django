@@ -24,7 +24,20 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
             return False
 
     def search_field(field):
-        return isinstance(field, (fields.CharField, fields.TextField))
+        allowed_fields = [
+            fields.CharField,
+            fields.TextField,
+            fields.IPAddressField,
+            fields.UUIDField
+        ]
+
+        try:
+            from django.contrib.postgres.fields import JSONField
+            allowed_fields.append(JSONField)
+        except ImportError:
+            pass
+
+        return isinstance(field, tuple(allowed_fields))
 
     def foreign_key_field(field):
         return isinstance(field, (fields.related.ForeignKey,))
