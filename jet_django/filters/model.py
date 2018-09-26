@@ -5,6 +5,7 @@ from collections import OrderedDict
 from jet_django.deps import django_filters
 from django.db import models
 from django.db.models import Q, fields
+from django.contrib.admin.utils import flatten
 from jet_django.deps.django_filters import filters
 from jet_django.deps.django_filters.constants import EMPTY_VALUES
 from django.db.models.fields.related import ForeignObjectRel
@@ -23,9 +24,32 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
             return False
 
     def search_field(field):
-        return isinstance(field, (fields.CharField, fields.TextField))
+        allowed_fields = [
+            fields.CharField,
+            fields.TextField,
+            fields.IPAddressField,
+            fields.UUIDField
+        ]
+
+        try:
+            from django.contrib.postgres.fields import JSONField
+            allowed_fields.append(JSONField)
+        except ImportError:
+            pass
+
+        return isinstance(field, tuple(allowed_fields))
+
+    def foreign_key_field(field):
+        return isinstance(field, (fields.related.ForeignKey,))
+
+    def foreign_key_map(field):
+        field_fields = field.related_model._meta.get_fields()
+        return list(map(lambda x: '{}__{}'.format(field.name, x.name), filter(search_field, field_fields)))
 
     search_fields = list(map(lambda x: x.name, filter(search_field, model_fields)))
+    search_related_fields = flatten(list(map(foreign_key_map, filter(foreign_key_field, model_fields))))
+
+    search_fields = search_fields + search_related_fields
 
     filter_field_names = list(map(lambda x: x.name, filter(filter_field, model_fields)))
     filter_fields = dict(map(
