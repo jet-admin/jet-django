@@ -1,14 +1,14 @@
 from jet_django.deps.rest_framework import viewsets
 from jet_django.deps.rest_framework.decorators import detail_route
 from jet_django.deps.rest_framework.response import Response
-
+from jet_django.mixins.cors_api_view import CORSAPIViewMixin
 from jet_django.models.dashboard import Dashboard
 from jet_django.permissions import HasProjectPermissions
 from jet_django.serializers.dashboard import DashboardSerializer
 from jet_django.serializers.dashboard_set_widgets import DashboardSetWidgetsSerializer
 
 
-class DashboardViewSet(viewsets.ModelViewSet):
+class DashboardViewSet(CORSAPIViewMixin, viewsets.ModelViewSet):
     model = Dashboard
     serializer_class = DashboardSerializer
     queryset = Dashboard.objects.prefetch_related('widgets').all()

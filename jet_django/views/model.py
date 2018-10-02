@@ -1,11 +1,12 @@
 from django.core.exceptions import NON_FIELD_ERRORS
+
 from jet_django.deps.rest_framework import status, viewsets, serializers
 from jet_django.deps.rest_framework.decorators import list_route
 from jet_django.deps.rest_framework.response import Response
 from jet_django.deps.rest_framework.serializers import ModelSerializer
-
 from jet_django.filters.model_aggregate import AggregateFilter
 from jet_django.filters.model_group import GroupFilter
+from jet_django.mixins.cors_api_view import CORSAPIViewMixin
 from jet_django.pagination import CustomPageNumberPagination
 from jet_django.permissions import HasProjectPermissions, ModifyNotInDemo
 from jet_django.serializers.reorder import reorder_serializer_factory
@@ -38,7 +39,7 @@ class GroupSerializer(serializers.Serializer):
 def model_viewset_factory(build_model, build_filter_class, build_serializer_class, build_detail_serializer_class, build_queryset, build_actions, ordering_field):
     ReorderSerializer = reorder_serializer_factory(build_queryset, ordering_field)
 
-    class Viewset(viewsets.ModelViewSet):
+    class Viewset(CORSAPIViewMixin, viewsets.ModelViewSet):
         model = build_model
         queryset = build_queryset
         pagination_class = CustomPageNumberPagination

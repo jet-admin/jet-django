@@ -2,16 +2,17 @@ import json
 
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+
 from jet_django.deps.rest_framework import viewsets
 from jet_django.deps.rest_framework.response import Response
-
 from jet_django.admin.jet import jet
+from jet_django.mixins.cors_api_view import CORSAPIViewMixin
 from jet_django.models.model_description import ModelDescription
 from jet_django.permissions import HasProjectPermissions
 from jet_django.serializers.model_description import ModelDescriptionSerializer
 
 
-class ModelDescriptionViewSet(viewsets.ModelViewSet):
+class ModelDescriptionViewSet(CORSAPIViewMixin, viewsets.ModelViewSet):
     model = ModelDescription
     serializer_class = ModelDescriptionSerializer
     queryset = ModelDescription.objects

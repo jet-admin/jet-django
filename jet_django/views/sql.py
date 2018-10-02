@@ -1,10 +1,11 @@
 from django.db import connection, ProgrammingError
 from django.utils.translation import ugettext_lazy as _
 from django.utils import six
+
 from jet_django.deps.rest_framework import views, status
 from jet_django.deps.rest_framework.exceptions import APIException
 from jet_django.deps.rest_framework.response import Response
-
+from jet_django.mixins.cors_api_view import CORSAPIViewMixin
 from jet_django.permissions import HasProjectPermissions
 from jet_django.serializers.sql import SqlSerializer
 
@@ -21,7 +22,7 @@ class SqlError(APIException):
         return six.text_type(self.detail)
 
 
-class SqlView(views.APIView):
+class SqlView(CORSAPIViewMixin, views.APIView):
     pagination_class = None
     authentication_classes = ()
     permission_classes = (HasProjectPermissions,)

@@ -1,13 +1,14 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from jet_django.deps.rest_framework import viewsets
 
+from jet_django.deps.rest_framework import viewsets
+from jet_django.mixins.cors_api_view import CORSAPIViewMixin
 from jet_django.models.menu_item import MenuSettings
 from jet_django.permissions import HasProjectPermissions
 from jet_django.serializers.menu_settings import MenuSettingsSerializer
 
 
-class MenuSettingsViewSet(viewsets.ModelViewSet):
+class MenuSettingsViewSet(CORSAPIViewMixin, viewsets.ModelViewSet):
     model = MenuSettings
     serializer_class = MenuSettingsSerializer
     queryset = MenuSettings.objects.all()

@@ -1,14 +1,15 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from jet_django.deps.rest_framework import viewsets
 
+from jet_django.deps.rest_framework import viewsets
 from jet_django.filters.view_settings import ViewSettingsFilterSet
+from jet_django.mixins.cors_api_view import CORSAPIViewMixin
 from jet_django.models.view_settings import ViewSettings
 from jet_django.permissions import HasProjectPermissions
 from jet_django.serializers.view_settings import ViewSettingsSerializer
 
 
-class ViewSettingsViewSet(viewsets.ModelViewSet):
+class ViewSettingsViewSet(CORSAPIViewMixin, viewsets.ModelViewSet):
     model = ViewSettings
     serializer_class = ViewSettingsSerializer
     queryset = ViewSettings.objects
