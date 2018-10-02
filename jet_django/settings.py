@@ -21,5 +21,6 @@ JET_REST_FRAMEWORK = getattr(settings, 'JET_REST_FRAMEWORK', {
     },
     'DEFAULT_RENDERER_CLASSES': (
         'jet_django.deps.rest_framework.renderers.JSONRenderer',
-    )
+    ),
+    'EXCEPTION_HANDLER': 'jet_django.views.exception_handler.jet_exception_handler',
 })
