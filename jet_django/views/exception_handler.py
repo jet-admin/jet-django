@@ -1,8 +1,7 @@
 from jet_django.deps.rest_framework import status
 from jet_django.deps.rest_framework.compat import set_rollback
 from jet_django.deps.rest_framework.views import exception_handler
-
-from rest_framework.response import Response
+from jet_django.deps.rest_framework.response import Response
 
 
 def jet_exception_handler(exc, context):
