@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 from jet_django.deps import django_filters
 from django.db import models
-from django.db.models import Q, fields
+from django.db.models import Q, fields, base
 from django.contrib.admin.utils import flatten
 from jet_django.deps.django_filters import filters
 from jet_django.deps.django_filters.constants import EMPTY_VALUES
@@ -40,7 +40,7 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
         return isinstance(field, tuple(allowed_fields))
 
     def foreign_key_field(field):
-        return isinstance(field, (fields.related.ForeignKey,))
+        return isinstance(field, (fields.related.ForeignKey,)) and isinstance(field.related_model, (base.ModelBase,))
 
     def foreign_key_map(field):
         field_fields = field.related_model._meta.get_fields()
