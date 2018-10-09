@@ -13,3 +13,6 @@ class SqlSerializer(serializers.Serializer):
         if any(map(lambda x: ' {} '.format(value.lower()).find(' {} '.format(x)) != -1, forbidden)):
             raise ValidationError('forbidden query')
         return value
+
+    def validate_params(self, value):
+        return list(filter(lambda x: x != '', value.split(',')))
