@@ -1,4 +1,4 @@
-from django.db import connection, ProgrammingError
+from django.db import connection, DatabaseError
 from django.utils.translation import ugettext_lazy as _
 from django.utils import six
 
@@ -34,7 +34,7 @@ class SqlView(CORSAPIViewMixin, views.APIView):
         with connection.cursor() as cursor:
             try:
                 cursor.execute(serializer.data['query'], serializer.data.get('params', []))
-            except ProgrammingError as e:
+            except DatabaseError as e:
                 raise SqlError(e)
             rows = cursor.fetchall()
 
