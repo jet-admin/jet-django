@@ -11,6 +11,7 @@ class HasProjectPermissions(BasePermission):
     def has_permission(self, request, view):
     #     return True
         token = request.META.get('HTTP_AUTHORIZATION')
+        permission = getattr(view, 'required_project_permission', None)
 
         if not token:
             return False
@@ -18,7 +19,7 @@ class HasProjectPermissions(BasePermission):
         if token[:len(self.token_prefix)] == self.token_prefix:
             token = token[len(self.token_prefix):]
 
-            result = project_auth(token)
+            result = project_auth(token, permission)
 
             if result.get('warning'):
                 view.headers['Application-Warning'] = result['warning']
@@ -27,7 +28,7 @@ class HasProjectPermissions(BasePermission):
         elif token[:len(self.project_token_prefix)] == self.project_token_prefix:
             token = token[len(self.project_token_prefix):]
 
-            result = project_auth(token)
+            result = project_auth(token, permission)
 
             if result.get('warning'):
                 view.headers['Application-Warning'] = result['warning']
