@@ -1,24 +1,8 @@
 from jet_django.admin.model_description import JetAdminModelDescription
-from jet_django.deps.rest_framework import views
-from jet_django.deps.rest_framework.response import Response
-
-from jet_django.permissions import HasProjectPermissions
 
 
 class JetAdmin(object):
     models = []
-
-    def models_view(self):
-        Admin = self
-
-        class View(views.APIView):
-            authentication_classes = ()
-            permission_classes = (HasProjectPermissions,)
-
-            def get(self, request, *args, **kwargs):
-                return Response(map(lambda x: x.serialize(), Admin.models))
-
-        return View
 
     def register(self, Model, fields=None, actions=list(), ordering_field=None, hidden=False):
         self.models.append(JetAdminModelDescription(Model, fields, actions, ordering_field, hidden))

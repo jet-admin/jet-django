@@ -23,7 +23,6 @@ class SqlError(APIException):
 
 
 class SqlView(CORSAPIViewMixin, views.APIView):
-    pagination_class = None
     authentication_classes = ()
     permission_classes = (HasProjectPermissions,)
 

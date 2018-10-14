@@ -6,7 +6,6 @@ from jet_django.serializers.file_upload import FileUploadSerializer
 
 
 class FileUploadView(CORSAPIViewMixin, views.APIView):
-    pagination_class = None
     authentication_classes = ()
     permission_classes = (HasProjectPermissions,)
 
