@@ -18,11 +18,13 @@ class HasProjectPermissions(BasePermission):
         if token[:len(self.token_prefix)] == self.token_prefix:
             token = token[len(self.token_prefix):]
 
-            return project_auth(token)
+            result = project_auth(token)
+            return result['result']
         elif token[:len(self.project_token_prefix)] == self.project_token_prefix:
             token = token[len(self.project_token_prefix):]
 
-            return project_auth(token)
+            result = project_auth(token)
+            return result['result']
         else:
             return False
 

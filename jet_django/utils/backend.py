@@ -36,7 +36,9 @@ def project_auth(token):
     project_token = Token.objects.all().first()
 
     if not project_token:
-        return False
+        return {
+            'result': False
+        }
 
     url = api_method_url('project_auth/')
     data = {
@@ -52,6 +54,18 @@ def project_auth(token):
 
     if not success:
         print('Project Auth request error', r.status_code, r.reason)
-        return False
+        return {
+            'result': False
+        }
 
-    return True
+    result = r.json()
+
+    if result.get('access_disabled'):
+        return {
+            'result': False,
+            'warning': result.get('warning')
+        }
+
+    return {
+        'result': True
+    }
