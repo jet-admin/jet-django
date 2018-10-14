@@ -24,7 +24,10 @@ def get_model_sibling(Model, instance, next, ordering=None):
         operator = 'gte' if asc else 'lte'
         return '{}__{}'.format(name, operator), getattr(instance, name)
 
-    params = OrderedDict(map(map_ordering, ordering[0:1]))
+    try:
+        params = OrderedDict(map(map_ordering, ordering[0:1]))
+    except AttributeError:
+        params = {}
 
     found_instance = False
     sibling = None
