@@ -70,5 +70,6 @@ def project_auth(token, permission=None):
         }
 
     return {
-        'result': True
+        'result': True,
+        'warning': result.get('warning')
     }

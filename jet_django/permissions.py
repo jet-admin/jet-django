@@ -19,11 +19,19 @@ class HasProjectPermissions(BasePermission):
             token = token[len(self.token_prefix):]
 
             result = project_auth(token)
+
+            if result.get('warning'):
+                view.headers['Application-Warning'] = result['warning']
+
             return result['result']
         elif token[:len(self.project_token_prefix)] == self.project_token_prefix:
             token = token[len(self.project_token_prefix):]
 
             result = project_auth(token)
+
+            if result.get('warning'):
+                view.headers['Application-Warning'] = result['warning']
+
             return result['result']
         else:
             return False
