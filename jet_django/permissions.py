@@ -22,7 +22,7 @@ class HasProjectPermissions(BasePermission):
             result = project_auth(token, permission)
 
             if result.get('warning'):
-                view.headers['Application-Warning'] = result['warning']
+                view.headers['X-Application-Warning'] = result['warning']
 
             return result['result']
         elif token[:len(self.project_token_prefix)] == self.project_token_prefix:
@@ -31,7 +31,7 @@ class HasProjectPermissions(BasePermission):
             result = project_auth(token, permission)
 
             if result.get('warning'):
-                view.headers['Application-Warning'] = result['warning']
+                view.headers['X-Application-Warning'] = result['warning']
 
             return result['result']
         else:
