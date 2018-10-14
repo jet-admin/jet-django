@@ -32,7 +32,7 @@ def register_token():
     return token, True
 
 
-def project_auth(token):
+def project_auth(token, permission=None):
     project_token = Token.objects.all().first()
 
     if not project_token:
@@ -48,6 +48,9 @@ def project_auth(token):
     headers = {
         'User-Agent': 'Jet Django'
     }
+
+    if permission:
+        data.update(permission)
 
     r = requests.request('POST', url, data=data, headers=headers)
     success = 200 <= r.status_code < 300
