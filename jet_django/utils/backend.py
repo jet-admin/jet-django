@@ -32,11 +32,13 @@ def register_token():
     return token, True
 
 
-def project_auth(token):
+def project_auth(token, permission=None):
     project_token = Token.objects.all().first()
 
     if not project_token:
-        return False
+        return {
+            'result': False
+        }
 
     url = api_method_url('project_auth/')
     data = {
@@ -47,11 +49,27 @@ def project_auth(token):
         'User-Agent': 'Jet Django'
     }
 
+    if permission:
+        data.update(permission)
+
     r = requests.request('POST', url, data=data, headers=headers)
     success = 200 <= r.status_code < 300
 
     if not success:
         print('Project Auth request error', r.status_code, r.reason)
-        return False
+        return {
+            'result': False
+        }
 
-    return True
+    result = r.json()
+
+    if result.get('access_disabled'):
+        return {
+            'result': False,
+            'warning': result.get('warning')
+        }
+
+    return {
+        'result': True,
+        'warning': result.get('warning')
+    }

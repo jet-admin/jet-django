@@ -1,17 +1,21 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
-from datetime import datetime, time
 from collections import namedtuple
+from datetime import datetime, time
 
 from django import forms
 from django.utils.dateparse import parse_datetime
-
 from django.utils.encoding import force_str
 from django.utils.translation import ugettext_lazy as _
 
+from .conf import settings
+from .constants import EMPTY_VALUES
 from .utils import handle_timezone
-from .widgets import RangeWidget, LookupTypeWidget, CSVWidget, BaseCSVWidget
+from .widgets import (
+    BaseCSVWidget,
+    CSVWidget,
+    DateRangeWidget,
+    LookupChoiceWidget,
+    RangeWidget
+)
 
 
 class RangeField(forms.MultiValueField):
@@ -22,7 +26,7 @@ class RangeField(forms.MultiValueField):
             fields = (
                 forms.DecimalField(),
                 forms.DecimalField())
-        super(RangeField, self).__init__(fields, *args, **kwargs)
+        super().__init__(fields, *args, **kwargs)
 
     def compress(self, data_list):
         if data_list:
@@ -31,12 +35,13 @@ class RangeField(forms.MultiValueField):
 
 
 class DateRangeField(RangeField):
+    widget = DateRangeWidget
 
     def __init__(self, *args, **kwargs):
         fields = (
             forms.DateField(),
             forms.DateField())
-        super(DateRangeField, self).__init__(fields, *args, **kwargs)
+        super().__init__(fields, *args, **kwargs)
 
     def compress(self, data_list):
         if data_list:
@@ -56,49 +61,60 @@ class DateRangeField(RangeField):
 
 
 class DateTimeRangeField(RangeField):
+    widget = DateRangeWidget
 
     def __init__(self, *args, **kwargs):
         fields = (
             forms.DateTimeField(),
             forms.DateTimeField())
-        super(DateTimeRangeField, self).__init__(fields, *args, **kwargs)
+        super().__init__(fields, *args, **kwargs)
 
 
 class TimeRangeField(RangeField):
+    widget = DateRangeWidget
 
     def __init__(self, *args, **kwargs):
         fields = (
             forms.TimeField(),
             forms.TimeField())
-        super(TimeRangeField, self).__init__(fields, *args, **kwargs)
+        super().__init__(fields, *args, **kwargs)
 
 
-class Lookup(namedtuple('Lookup', ('value', 'lookup_type'))):
-    # python nature is test __len__ on tuple types for boolean check
-    def __len__(self):
-        if not self.value:
-            return 0
-        return 2
+class Lookup(namedtuple('Lookup', ('value', 'lookup_expr'))):
+    def __new__(cls, value, lookup_expr):
+        if value in EMPTY_VALUES or lookup_expr in EMPTY_VALUES:
+            raise ValueError(
+                "Empty values ([], (), {}, '', None) are not "
+                "valid Lookup arguments. Return None instead."
+            )
+
+        return super().__new__(cls, value, lookup_expr)
 
 
-class LookupTypeField(forms.MultiValueField):
+class LookupChoiceField(forms.MultiValueField):
+    default_error_messages = {
+        'lookup_required': _('Select a lookup.'),
+    }
+
     def __init__(self, field, lookup_choices, *args, **kwargs):
-        fields = (
-            field,
-            forms.ChoiceField(choices=lookup_choices)
-        )
-        defaults = {
-            'widgets': [f.widget for f in fields],
-        }
-        widget = LookupTypeWidget(**defaults)
+        empty_label = kwargs.pop('empty_label', settings.EMPTY_CHOICE_LABEL)
+        fields = (field, ChoiceField(choices=lookup_choices, empty_label=empty_label))
+        widget = LookupChoiceWidget(widgets=[f.widget for f in fields])
         kwargs['widget'] = widget
         kwargs['help_text'] = field.help_text
-        super(LookupTypeField, self).__init__(fields, *args, **kwargs)
+        super().__init__(fields, *args, **kwargs)
 
     def compress(self, data_list):
         if len(data_list) == 2:
-            return Lookup(value=data_list[0], lookup_type=data_list[1] or 'exact')
-        return Lookup(value=None, lookup_type='exact')
+            value, lookup_expr = data_list
+            if value not in EMPTY_VALUES:
+                if lookup_expr not in EMPTY_VALUES:
+                    return Lookup(value=value, lookup_expr=lookup_expr)
+                else:
+                    raise forms.ValidationError(
+                        self.error_messages['lookup_required'],
+                        code='lookup_required')
+        return None
 
 
 class IsoDateTimeField(forms.DateTimeField):
@@ -121,7 +137,7 @@ class IsoDateTimeField(forms.DateTimeField):
             if parsed is None:  # Continue with other formats if doesn't match
                 raise ValueError
             return handle_timezone(parsed)
-        return super(IsoDateTimeField, self).strptime(value, format)
+        return super().strptime(value, format)
 
 
 class BaseCSVField(forms.Field):
@@ -140,7 +156,7 @@ class BaseCSVField(forms.Field):
         widget = kwargs.get('widget') or self.widget
         kwargs['widget'] = self._get_widget_class(widget)
 
-        super(BaseCSVField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def _get_widget_class(self, widget):
         # passthrough, allows for override
@@ -173,11 +189,117 @@ class BaseRangeField(BaseCSVField):
     }
 
     def clean(self, value):
-        value = super(BaseRangeField, self).clean(value)
+        value = super().clean(value)
 
-        if value is not None and len(value) != 2:
+        assert value is None or isinstance(value, list)
+
+        if value and len(value) != 2:
             raise forms.ValidationError(
                 self.error_messages['invalid_values'],
                 code='invalid_values')
 
         return value
+
+
+class ChoiceIterator(object):
+    # Emulates the behavior of ModelChoiceIterator, but instead wraps
+    # the field's _choices iterable.
+
+    def __init__(self, field, choices):
+        self.field = field
+        self.choices = choices
+
+    def __iter__(self):
+        if self.field.empty_label is not None:
+            yield ("", self.field.empty_label)
+        if self.field.null_label is not None:
+            yield (self.field.null_value, self.field.null_label)
+
+        # Python 2 lacks 'yield from'
+        for choice in self.choices:
+            yield choice
+
+    def __len__(self):
+        add = 1 if self.field.empty_label is not None else 0
+        add += 1 if self.field.null_label is not None else 0
+        return len(self.choices) + add
+
+
+class ModelChoiceIterator(forms.models.ModelChoiceIterator):
+    # Extends the base ModelChoiceIterator to add in 'null' choice handling.
+    # This is a bit verbose since we have to insert the null choice after the
+    # empty choice, but before the remainder of the choices.
+
+    def __iter__(self):
+        iterable = super().__iter__()
+
+        if self.field.empty_label is not None:
+            yield next(iterable)
+        if self.field.null_label is not None:
+            yield (self.field.null_value, self.field.null_label)
+
+        # Python 2 lacks 'yield from'
+        for value in iterable:
+            yield value
+
+    def __len__(self):
+        add = 1 if self.field.null_label is not None else 0
+        return super().__len__() + add
+
+
+class ChoiceIteratorMixin(object):
+    def __init__(self, *args, **kwargs):
+        self.null_label = kwargs.pop('null_label', settings.NULL_CHOICE_LABEL)
+        self.null_value = kwargs.pop('null_value', settings.NULL_CHOICE_VALUE)
+
+        super().__init__(*args, **kwargs)
+
+    def _get_choices(self):
+        return super()._get_choices()
+
+    def _set_choices(self, value):
+        super()._set_choices(value)
+        value = self.iterator(self, self._choices)
+
+        self._choices = self.widget.choices = value
+    choices = property(_get_choices, _set_choices)
+
+
+# Unlike their Model* counterparts, forms.ChoiceField and forms.MultipleChoiceField do not set empty_label
+class ChoiceField(ChoiceIteratorMixin, forms.ChoiceField):
+    iterator = ChoiceIterator
+
+    def __init__(self, *args, **kwargs):
+        self.empty_label = kwargs.pop('empty_label', settings.EMPTY_CHOICE_LABEL)
+        super().__init__(*args, **kwargs)
+
+
+class MultipleChoiceField(ChoiceIteratorMixin, forms.MultipleChoiceField):
+    iterator = ChoiceIterator
+
+    def __init__(self, *args, **kwargs):
+        self.empty_label = None
+        super().__init__(*args, **kwargs)
+
+
+class ModelChoiceField(ChoiceIteratorMixin, forms.ModelChoiceField):
+    iterator = ModelChoiceIterator
+
+    def to_python(self, value):
+        # bypass the queryset value check
+        if self.null_label is not None and value == self.null_value:
+            return value
+        return super().to_python(value)
+
+
+class ModelMultipleChoiceField(ChoiceIteratorMixin, forms.ModelMultipleChoiceField):
+    iterator = ModelChoiceIterator
+
+    def _check_values(self, value):
+        null = self.null_label is not None and value and self.null_value in value
+        if null:  # remove the null value and any potential duplicates
+            value = [v for v in value if v != self.null_value]
+
+        result = list(super()._check_values(value))
+        result += [self.null_value] if null else []
+        return result

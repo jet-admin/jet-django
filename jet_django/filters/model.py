@@ -4,13 +4,12 @@ from collections import OrderedDict
 
 from jet_django.deps import django_filters
 from django.db import models
-from django.db.models import Q, fields
+from django.db.models import Q, fields, base
 from django.contrib.admin.utils import flatten
 from jet_django.deps.django_filters import filters
 from jet_django.deps.django_filters.constants import EMPTY_VALUES
 from django.db.models.fields.related import ForeignObjectRel
 from jet_django.deps.django_filters.utils import resolve_field, get_model_field
-from jet_django.deps.django_filters.filterset import get_filter_name
 
 
 def model_filter_class_factory(build_model, model_fields, model_relations):
@@ -40,7 +39,7 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
         return isinstance(field, tuple(allowed_fields))
 
     def foreign_key_field(field):
-        return isinstance(field, (fields.related.ForeignKey,))
+        return isinstance(field, (fields.related.ForeignKey,)) and isinstance(field.related_model, (base.ModelBase,))
 
     def foreign_key_map(field):
         field_fields = field.related_model._meta.get_fields()
@@ -142,13 +141,8 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
                 if field is None:
                     undefined.append(field_name)
 
-                # ForeignObjectRel does not support non-exact lookups
-                if isinstance(field, ForeignObjectRel):
-                    filters[field_name] = cls.filter_for_reverse_field(field, field_name)
-                    continue
-
                 for lookup_expr in lookups:
-                    filter_name = get_filter_name(field_name, lookup_expr)
+                    filter_name = cls.get_filter_name(field_name, lookup_expr)
 
                     # If the filter is explicitly declared on the class, skip generation
                     if filter_name in cls.declared_filters:
@@ -173,23 +167,24 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
             return filters
 
         @classmethod
-        def filter_for_field(cls, f, name, lookup_expr='exact', exclude=False):
-            f, lookup_type = resolve_field(f, lookup_expr)
+        def filter_for_field(cls, field, field_name, lookup_expr='exact', exclude=False):
+            field, lookup_type = resolve_field(field, lookup_expr)
 
             default = {
-                'name': name,
+                'field_name': field_name,
                 'lookup_expr': lookup_expr,
                 'exclude': exclude
             }
 
-            filter_class, params = cls.filter_for_lookup(f, lookup_type)
+            filter_class, params = cls.filter_for_lookup(field, lookup_type)
             default.update(params)
 
             assert filter_class is not None, (
                                                  "%s resolved field '%s' with '%s' lookup to an unrecognized field "
                                                  "type %s. Try adding an override to 'Meta.filter_overrides'. See: "
-                                                 "https://django-filter.readthedocs.io/en/develop/ref/filterset.html#customise-filter-generation-with-filter-overrides"
-                                             ) % (cls.__name__, name, lookup_expr, f.__class__.__name__)
+                                                 "https://django-filter.readthedocs.io/en/master/ref/filterset.html"
+                                                 "#customise-filter-generation-with-filter-overrides"
+        ) % (cls.__name__, field_name, lookup_expr, field.__class__.__name__)
 
             return filter_class(**default)
 

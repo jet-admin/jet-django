@@ -14,11 +14,17 @@ class RawFileField(serializers.CharField):
         super().__init__(*args, **kwargs)
 
     def to_internal_value(self, data):
-        value = super().to_internal_value(data)
+        if isinstance(data, dict):
+            obj = data
+        else:
+            try:
+                obj = json.loads(data)
+            except (ValueError, TypeError):
+                self.fail('invalid_format')
+
         try:
-            obj = json.loads(value)
             return obj['value']
-        except (ValueError, KeyError):
+        except KeyError:
             self.fail('invalid_format')
 
     def to_representation(self, value):

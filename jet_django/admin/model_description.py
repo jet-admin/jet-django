@@ -39,7 +39,7 @@ class JetAdminModelDescription(object):
 
     @property
     def viewset_url(self):
-        return 'models/{}/{}'.format(self.content_type.app_label, self.content_type.model)
+        return 'models/(?P<app_label>{})/(?P<model>{})'.format(self.content_type.app_label, self.content_type.model)
 
     def get_model_fields(self):
         fields = self.model._meta.get_fields()

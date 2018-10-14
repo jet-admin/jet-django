@@ -175,11 +175,11 @@ msgid "No"
 msgstr "No"
 
 #: rest_framework/filterset.py:31
-#: templates/django_filters/rest_framework/form.html:5
+#: templates/jet_django.deps.django_filters/rest_framework/form.html:5
 msgid "Submit"
 msgstr "Enviar"
 
-#: templates/django_filters/rest_framework/crispy_form.html:4
-#: templates/django_filters/rest_framework/form.html:2
+#: templates/jet_django.deps.django_filters/rest_framework/crispy_form.html:4
+#: templates/jet_django.deps.django_filters/rest_framework/form.html:2
 msgid "Field filters"
 msgstr "Filtros de campo"

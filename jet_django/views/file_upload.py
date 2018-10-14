@@ -1,12 +1,11 @@
 from jet_django.deps.rest_framework import views
 from jet_django.deps.rest_framework.response import Response
-
+from jet_django.mixins.cors_api_view import CORSAPIViewMixin
 from jet_django.permissions import HasProjectPermissions
 from jet_django.serializers.file_upload import FileUploadSerializer
 
 
-class FileUploadView(views.APIView):
-    pagination_class = None
+class FileUploadView(CORSAPIViewMixin, views.APIView):
     authentication_classes = ()
     permission_classes = (HasProjectPermissions,)
 

@@ -3,10 +3,11 @@ from urllib.parse import quote
 from django.views import generic
 
 from jet_django import settings
+from jet_django.mixins.cors_api_view import CORSAPIViewMixin
 from jet_django.utils.backend import register_token
 
 
-class RegisterView(generic.RedirectView):
+class RegisterView(CORSAPIViewMixin, generic.RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         token, created = register_token()
 

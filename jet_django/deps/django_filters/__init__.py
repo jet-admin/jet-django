@@ -1,26 +1,24 @@
 # flake8: noqa
-from __future__ import absolute_import
-from .constants import STRICTNESS
+import pkgutil
+
 from .filterset import FilterSet
 from .filters import *
 
 # We make the `rest_framework` module available without an additional import.
-#   If DRF is not installed we simply set None.
-try:
+#   If DRF is not installed, no-op.
+if pkgutil.find_loader('jet_django.deps.rest_framework') is not None:
     from . import rest_framework
-except ImportError:
-    rest_framework = None
+del pkgutil
 
-__version__ = '1.0.4'
+__version__ = '2.0.0'
 
 
 def parse_version(version):
     '''
-    '0.1.2-dev' -> (0, 1, 2, 'dev')
+    '0.1.2.dev1' -> (0, 1, 2, 'dev1')
     '0.1.2' -> (0, 1, 2)
     '''
     v = version.split('.')
-    v = v[:-1] + v[-1].split('-')
     ret = []
     for p in v:
         if p.isdigit():
