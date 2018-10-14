@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from jet_django.deps.rest_framework import status
 from jet_django.deps.rest_framework.compat import set_rollback
@@ -15,6 +16,7 @@ def jet_exception_handler(exc, context):
         data = {'detail': 'Server Error'}
         set_rollback()
         logger.exception('Jet view exception', exc_info=exc)
+        traceback.print_exc()
         response = Response(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     if context and 'request' in context and context['request'].method == 'OPTIONS':
