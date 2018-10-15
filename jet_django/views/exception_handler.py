@@ -2,8 +2,7 @@ import logging
 import traceback
 
 from jet_django.deps.rest_framework import status
-from jet_django.deps.rest_framework.compat import set_rollback
-from jet_django.deps.rest_framework.views import exception_handler
+from jet_django.deps.rest_framework.views import exception_handler, set_rollback
 from jet_django.deps.rest_framework.response import Response
 
 logger = logging.getLogger(__name__)
