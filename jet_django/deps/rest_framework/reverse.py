@@ -3,11 +3,11 @@ Provide urlresolver functions that return fully qualified URLs or view names
 """
 from __future__ import unicode_literals
 
+from django.urls import NoReverseMatch
+from django.urls import reverse as django_reverse
 from django.utils import six
 from django.utils.functional import lazy
 
-from jet_django.deps.rest_framework.compat import reverse as django_reverse
-from jet_django.deps.rest_framework.compat import NoReverseMatch
 from jet_django.deps.rest_framework.settings import api_settings
 from jet_django.deps.rest_framework.utils.urls import replace_query_param
 

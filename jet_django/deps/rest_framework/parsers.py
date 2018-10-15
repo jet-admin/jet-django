@@ -6,22 +6,23 @@ on the request, such as form content or json encoded data.
 """
 from __future__ import unicode_literals
 
-import json
+import codecs
 
 from django.conf import settings
 from django.core.files.uploadhandler import StopFutureHandlers
 from django.http import QueryDict
+from django.http.multipartparser import ChunkIter
 from django.http.multipartparser import \
     MultiPartParser as DjangoMultiPartParser
-from django.http.multipartparser import (
-    ChunkIter, MultiPartParserError, parse_header
-)
+from django.http.multipartparser import MultiPartParserError, parse_header
 from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.six.moves.urllib import parse as urlparse
 
 from jet_django.deps.rest_framework import renderers
 from jet_django.deps.rest_framework.exceptions import ParseError
+from jet_django.deps.rest_framework.settings import api_settings
+from jet_django.deps.rest_framework.utils import json
 
 
 class DataAndFiles(object):
@@ -52,6 +53,7 @@ class JSONParser(BaseParser):
     """
     media_type = 'application/json'
     renderer_class = renderers.JSONRenderer
+    strict = api_settings.STRICT_JSON
 
     def parse(self, stream, media_type=None, parser_context=None):
         """
@@ -61,8 +63,9 @@ class JSONParser(BaseParser):
         encoding = parser_context.get('encoding', settings.DEFAULT_CHARSET)
 
         try:
-            data = stream.read().decode(encoding)
-            return json.loads(data)
+            decoded_stream = codecs.getreader(encoding)(stream)
+            parse_constant = json.strict_constant if self.strict else None
+            return json.load(decoded_stream, parse_constant=parse_constant)
         except ValueError as exc:
             raise ParseError('JSON parse error - %s' % six.text_type(exc))
 
@@ -213,7 +216,7 @@ class FileUploadParser(BaseParser):
     def get_encoded_filename(self, filename_parm):
         """
         Handle encoded filenames per RFC6266. See also:
-        http://tools.ietf.org/html/rfc2231#section-4
+        https://tools.ietf.org/html/rfc2231#section-4
         """
         encoded_filename = force_text(filename_parm['filename*'])
         try:

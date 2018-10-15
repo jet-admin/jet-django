@@ -5,19 +5,18 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
-from django.db import models
+from django.db import connection, models, transaction
 from django.http import Http404
 from django.http.response import HttpResponseBase
-from django.utils import six
+from django.utils.cache import cc_delim_re, patch_vary_headers
 from django.utils.encoding import smart_text
-from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
 from jet_django.deps.rest_framework import exceptions, status
-from jet_django.deps.rest_framework.compat import set_rollback
 from jet_django.deps.rest_framework.request import Request
 from jet_django.deps.rest_framework.response import Response
+from jet_django.deps.rest_framework.schemas import DefaultSchema
 from jet_django.deps.rest_framework.settings import api_settings
 from jet_django.deps.rest_framework.utils import formatting
 
@@ -53,6 +52,12 @@ def get_view_description(view_cls, html=False):
     return description
 
 
+def set_rollback():
+    atomic_requests = connection.settings_dict.get('ATOMIC_REQUESTS', False)
+    if atomic_requests and connection.in_atomic_block:
+        transaction.set_rollback(True)
+
+
 def exception_handler(exc, context):
     """
     Returns the response that should be used for any given exception.
@@ -63,6 +68,11 @@ def exception_handler(exc, context):
     Any unhandled exceptions may return `None`, which will cause a 500 error
     to be raised.
     """
+    if isinstance(exc, Http404):
+        exc = exceptions.NotFound()
+    elif isinstance(exc, PermissionDenied):
+        exc = exceptions.PermissionDenied()
+
     if isinstance(exc, exceptions.APIException):
         headers = {}
         if getattr(exc, 'auth_header', None):
@@ -77,20 +87,6 @@ def exception_handler(exc, context):
 
         set_rollback()
         return Response(data, status=exc.status_code, headers=headers)
-
-    elif isinstance(exc, Http404):
-        msg = _('Not found.')
-        data = {'detail': six.text_type(msg)}
-
-        set_rollback()
-        return Response(data, status=status.HTTP_404_NOT_FOUND)
-
-    elif isinstance(exc, PermissionDenied):
-        msg = _('Permission denied.')
-        data = {'detail': six.text_type(msg)}
-
-        set_rollback()
-        return Response(data, status=status.HTTP_403_FORBIDDEN)
 
     return None
 
@@ -110,8 +106,7 @@ class APIView(View):
     # Allow dependency injection of other settings to make testing easier.
     settings = api_settings
 
-    # Mark the view as being included or excluded from schema generation.
-    exclude_from_schema = False
+    schema = DefaultSchema()
 
     @classmethod
     def as_view(cls, **initkwargs):
@@ -290,7 +285,7 @@ class APIView(View):
         """
         Returns the exception handler that this view uses.
         """
-        return api_settings.EXCEPTION_HANDLER
+        return self.settings.EXCEPTION_HANDLER
 
     # API policy implementation methods
 
@@ -413,6 +408,11 @@ class APIView(View):
             response.accepted_renderer = request.accepted_renderer
             response.accepted_media_type = request.accepted_media_type
             response.renderer_context = self.get_renderer_context()
+
+        # Add new vary headers to the response instead of overwriting.
+        vary_headers = self.headers.pop('Vary', None)
+        if vary_headers is not None:
+            patch_vary_headers(response, cc_delim_re.split(vary_headers))
 
         for key, value in self.headers.items():
             response[key] = value

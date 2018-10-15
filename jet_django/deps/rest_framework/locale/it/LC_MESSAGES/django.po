@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: Django REST framework\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-07-12 16:13+0100\n"
-"PO-Revision-Date: 2016-07-12 15:14+0000\n"
+"PO-Revision-Date: 2017-08-03 14:58+0000\n"
 "Last-Translator: Thomas Christie <tom@tomchristie.com>\n"
 "Language-Team: Italian (http://www.transifex.com/django-rest-framework-1/django-rest-framework/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -312,7 +312,7 @@ msgstr "Era atteso un dizionario di oggetti ma il dato ricevuto è di tipo \"{in
 msgid "Value must be valid JSON."
 msgstr "Il valore deve essere un JSON valido."
 
-#: filters.py:36 templates/rest_framework/filters/django_filter.html:5
+#: filters.py:36 templates/jet_django.deps.rest_framework/filters/django_filter.html:5
 msgid "Submit"
 msgstr "Invia"
 
@@ -368,33 +368,33 @@ msgstr "Valore non valido."
 msgid "Invalid data. Expected a dictionary, but got {datatype}."
 msgstr "Dati non validi. Era atteso un dizionario, ma si è ricevuto {datatype}."
 
-#: templates/rest_framework/admin.html:116
-#: templates/rest_framework/base.html:128
+#: templates/jet_django.deps.rest_framework/admin.html:116
+#: templates/jet_django.deps.rest_framework/base.html:128
 msgid "Filters"
 msgstr "Filtri"
 
-#: templates/rest_framework/filters/django_filter.html:2
-#: templates/rest_framework/filters/django_filter_crispyforms.html:4
+#: templates/jet_django.deps.rest_framework/filters/django_filter.html:2
+#: templates/jet_django.deps.rest_framework/filters/django_filter_crispyforms.html:4
 msgid "Field filters"
 msgstr "Filtri per il campo"
 
-#: templates/rest_framework/filters/ordering.html:3
+#: templates/jet_django.deps.rest_framework/filters/ordering.html:3
 msgid "Ordering"
 msgstr "Ordinamento"
 
-#: templates/rest_framework/filters/search.html:2
+#: templates/jet_django.deps.rest_framework/filters/search.html:2
 msgid "Search"
 msgstr "Cerca"
 
-#: templates/rest_framework/horizontal/radio.html:2
-#: templates/rest_framework/inline/radio.html:2
-#: templates/rest_framework/vertical/radio.html:2
+#: templates/jet_django.deps.rest_framework/horizontal/radio.html:2
+#: templates/jet_django.deps.rest_framework/inline/radio.html:2
+#: templates/jet_django.deps.rest_framework/vertical/radio.html:2
 msgid "None"
 msgstr "Nessuno"
 
-#: templates/rest_framework/horizontal/select_multiple.html:2
-#: templates/rest_framework/inline/select_multiple.html:2
-#: templates/rest_framework/vertical/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/horizontal/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/inline/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/vertical/select_multiple.html:2
 msgid "No items to select."
 msgstr "Nessun elemento da selezionare."
 

@@ -6,6 +6,7 @@ from collections import OrderedDict
 from django.utils.encoding import force_text
 
 from jet_django.deps.rest_framework.compat import unicode_to_repr
+from jet_django.deps.rest_framework.utils import json
 
 
 class ReturnDict(OrderedDict):
@@ -82,6 +83,19 @@ class BoundField(object):
         return self.__class__(self._field, value, self.errors, self._prefix)
 
 
+class JSONBoundField(BoundField):
+    def as_form_field(self):
+        value = self.value
+        # When HTML form input is used and the input is not valid
+        # value will be a JSONString, rather than a JSON primitive.
+        if not getattr(value, 'is_json_string', False):
+            try:
+                value = json.dumps(self.value, sort_keys=True, indent=4)
+            except (TypeError, ValueError):
+                pass
+        return self.__class__(self._field, value, self.errors, self._prefix)
+
+
 class NestedBoundField(BoundField):
     """
     This `BoundField` additionally implements __iter__ and __getitem__
@@ -101,7 +115,7 @@ class NestedBoundField(BoundField):
     def __getitem__(self, key):
         field = self.fields[key]
         value = self.value.get(key) if self.value else None
-        error = self.errors.get(key) if self.errors else None
+        error = self.errors.get(key) if isinstance(self.errors, dict) else None
         if hasattr(field, 'fields'):
             return NestedBoundField(field, value, error, prefix=self.name + '.')
         return BoundField(field, value, error, prefix=self.name + '.')

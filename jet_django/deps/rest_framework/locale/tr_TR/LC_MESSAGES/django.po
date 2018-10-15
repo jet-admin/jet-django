@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Yusuf (Josè) Luis <alagunajs@gmail.com>, 2015-2016
+# José Luis <alagunajs@gmail.com>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Django REST framework\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-07-12 16:13+0100\n"
-"PO-Revision-Date: 2016-07-12 15:14+0000\n"
+"PO-Revision-Date: 2017-08-03 14:58+0000\n"
 "Last-Translator: Thomas Christie <tom@tomchristie.com>\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/django-rest-framework-1/django-rest-framework/language/tr_TR/)\n"
 "MIME-Version: 1.0\n"
@@ -309,7 +309,7 @@ msgstr "Sözlük tipi bir değişken beklenirken \"{input_type}\" tipi bir deği
 msgid "Value must be valid JSON."
 msgstr "Değer geçerli bir JSON olmalı."
 
-#: filters.py:36 templates/rest_framework/filters/django_filter.html:5
+#: filters.py:36 templates/jet_django.deps.rest_framework/filters/django_filter.html:5
 msgid "Submit"
 msgstr "Gönder"
 
@@ -365,33 +365,33 @@ msgstr "Geçersiz değer."
 msgid "Invalid data. Expected a dictionary, but got {datatype}."
 msgstr "Geçersiz veri. Bir sözlük bekleniyor, ama var {datatype}."
 
-#: templates/rest_framework/admin.html:116
-#: templates/rest_framework/base.html:128
+#: templates/jet_django.deps.rest_framework/admin.html:116
+#: templates/jet_django.deps.rest_framework/base.html:128
 msgid "Filters"
 msgstr "Filtreler"
 
-#: templates/rest_framework/filters/django_filter.html:2
-#: templates/rest_framework/filters/django_filter_crispyforms.html:4
+#: templates/jet_django.deps.rest_framework/filters/django_filter.html:2
+#: templates/jet_django.deps.rest_framework/filters/django_filter_crispyforms.html:4
 msgid "Field filters"
 msgstr "Alan filtreleri"
 
-#: templates/rest_framework/filters/ordering.html:3
+#: templates/jet_django.deps.rest_framework/filters/ordering.html:3
 msgid "Ordering"
 msgstr "Sıralama"
 
-#: templates/rest_framework/filters/search.html:2
+#: templates/jet_django.deps.rest_framework/filters/search.html:2
 msgid "Search"
 msgstr "Arama"
 
-#: templates/rest_framework/horizontal/radio.html:2
-#: templates/rest_framework/inline/radio.html:2
-#: templates/rest_framework/vertical/radio.html:2
+#: templates/jet_django.deps.rest_framework/horizontal/radio.html:2
+#: templates/jet_django.deps.rest_framework/inline/radio.html:2
+#: templates/jet_django.deps.rest_framework/vertical/radio.html:2
 msgid "None"
 msgstr "Hiç kimse"
 
-#: templates/rest_framework/horizontal/select_multiple.html:2
-#: templates/rest_framework/inline/select_multiple.html:2
-#: templates/rest_framework/vertical/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/horizontal/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/inline/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/vertical/select_multiple.html:2
 msgid "No items to select."
 msgstr "Seçenek yok."
 

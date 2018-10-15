@@ -9,6 +9,7 @@ used to annotate methods on viewsets that should be included by routers.
 from __future__ import unicode_literals
 
 import types
+import warnings
 
 from django.utils import six
 
@@ -45,7 +46,7 @@ def api_view(http_method_names=None, exclude_from_schema=False):
         assert isinstance(http_method_names, (list, tuple)), \
             '@api_view expected a list of strings, received %s' % type(http_method_names).__name__
 
-        allowed_methods = set(http_method_names) | set(('options',))
+        allowed_methods = set(http_method_names) | {'options'}
         WrappedAPIView.http_method_names = [method.lower() for method in allowed_methods]
 
         def handler(self, *args, **kwargs):
@@ -72,7 +73,17 @@ def api_view(http_method_names=None, exclude_from_schema=False):
         WrappedAPIView.permission_classes = getattr(func, 'permission_classes',
                                                     APIView.permission_classes)
 
-        WrappedAPIView.exclude_from_schema = exclude_from_schema
+        WrappedAPIView.schema = getattr(func, 'schema',
+                                        APIView.schema)
+
+        if exclude_from_schema:
+            warnings.warn(
+                "The `exclude_from_schema` argument to `api_view` is deprecated. "
+                "Use the `schema` decorator instead, passing `None`.",
+                DeprecationWarning
+            )
+            WrappedAPIView.exclude_from_schema = exclude_from_schema
+
         return WrappedAPIView.as_view()
     return decorator
 
@@ -112,16 +123,51 @@ def permission_classes(permission_classes):
     return decorator
 
 
+def schema(view_inspector):
+    def decorator(func):
+        func.schema = view_inspector
+        return func
+    return decorator
+
+
+def action(methods=None, detail=None, url_path=None, url_name=None, **kwargs):
+    """
+    Mark a ViewSet method as a routable action.
+
+    Set the `detail` boolean to determine if this action should apply to
+    instance/detail requests or collection/list requests.
+    """
+    methods = ['get'] if (methods is None) else methods
+    methods = [method.lower() for method in methods]
+
+    assert detail is not None, (
+        "@action() missing required argument: 'detail'"
+    )
+
+    def decorator(func):
+        func.bind_to_methods = methods
+        func.detail = detail
+        func.url_path = url_path if url_path else func.__name__
+        func.url_name = url_name if url_name else func.__name__.replace('_', '-')
+        func.kwargs = kwargs
+        return func
+    return decorator
+
+
 def detail_route(methods=None, **kwargs):
     """
     Used to mark a method on a ViewSet that should be routed for detail requests.
     """
-    methods = ['get'] if (methods is None) else methods
+    warnings.warn(
+        "`detail_route` is pending deprecation and will be removed in 3.10 in favor of "
+        "`action`, which accepts a `detail` bool. Use `@action(detail=True)` instead.",
+        PendingDeprecationWarning, stacklevel=2
+    )
 
     def decorator(func):
-        func.bind_to_methods = methods
-        func.detail = True
-        func.kwargs = kwargs
+        func = action(methods, detail=True, **kwargs)(func)
+        if 'url_name' not in kwargs:
+            func.url_name = func.url_path.replace('_', '-')
         return func
     return decorator
 
@@ -130,11 +176,15 @@ def list_route(methods=None, **kwargs):
     """
     Used to mark a method on a ViewSet that should be routed for list requests.
     """
-    methods = ['get'] if (methods is None) else methods
+    warnings.warn(
+        "`list_route` is pending deprecation and will be removed in 3.10 in favor of "
+        "`action`, which accepts a `detail` bool. Use `@action(detail=False)` instead.",
+        PendingDeprecationWarning, stacklevel=2
+    )
 
     def decorator(func):
-        func.bind_to_methods = methods
-        func.detail = False
-        func.kwargs = kwargs
+        func = action(methods, detail=False, **kwargs)(func)
+        if 'url_name' not in kwargs:
+            func.url_name = func.url_path.replace('_', '-')
         return func
     return decorator

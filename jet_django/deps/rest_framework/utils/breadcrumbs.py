@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from jet_django.deps.rest_framework.compat import get_script_prefix, resolve
+from django.urls import get_script_prefix, resolve
 
 
 def get_breadcrumbs(url, request=None):
@@ -24,11 +24,12 @@ def get_breadcrumbs(url, request=None):
             # Check if this is a REST framework view,
             # and if so add it to the breadcrumbs
             cls = getattr(view, 'cls', None)
+            initkwargs = getattr(view, 'initkwargs', {})
             if cls is not None and issubclass(cls, APIView):
                 # Don't list the same view twice in a row.
                 # Probably an optional trailing slash.
                 if not seen or seen[-1] != view:
-                    c = cls()
+                    c = cls(**initkwargs)
                     c.suffix = getattr(view, 'suffix', None)
                     name = c.get_view_name()
                     insert_url = preserve_builtin_query_params(prefix + url, request)

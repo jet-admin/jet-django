@@ -8,6 +8,8 @@ from jet_django.views.register import RegisterView
 from jet_django.views.root import RootView
 from jet_django.views.sql import SqlView
 
+app_name = 'jet_django'
+
 
 def init_urls():
     class Router(DefaultRouter):

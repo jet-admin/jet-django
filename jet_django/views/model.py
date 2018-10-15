@@ -77,7 +77,7 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
                 return build_serializer_class
 
         @list_route(methods=['get'])
-        def aggregate(self, request):
+        def aggregate(self, request, *args, **kwargs):
             queryset = self.filter_queryset(self.get_queryset())
 
             y_func = request.GET['_y_func'].lower()
@@ -101,7 +101,7 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
             return Response(serializer.data)
 
         @list_route(methods=['get'])
-        def group(self, request):
+        def group(self, request, *args, **kwargs):
             queryset = self.filter_queryset(self.get_queryset())
 
             x_column = request.GET['_x_column']
@@ -147,14 +147,14 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
             return serializer_class(*args, **kwargs)
 
         @list_route(methods=['post'])
-        def reorder(self, request):
+        def reorder(self, request, *args, **kwargs):
             serializer = ReorderSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
 
         @list_route(methods=['post'])
-        def reset_order(self, request):
+        def reset_order(self, request, *args, **kwargs):
             i = 1
             for instance in build_queryset:
                 setattr(instance, ordering_field, i)

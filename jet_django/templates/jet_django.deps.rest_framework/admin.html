@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 {% load i18n %}
 {% load jet_django_deps_rest_framework %}
 
@@ -236,7 +236,7 @@
             csrfCookieName: "{{ csrf_cookie_name|default:'csrftoken' }}"
           };
         </script>
-        <script src="{% static "jet_django.deps.rest_framework/js/jquery-1.12.4.min.js" %}"></script>
+        <script src="{% static "jet_django.deps.rest_framework/js/jquery-3.3.1.min.js" %}"></script>
         <script src="{% static "jet_django.deps.rest_framework/js/ajax-form.js" %}"></script>
         <script src="{% static "jet_django.deps.rest_framework/js/csrf.js" %}"></script>
         <script src="{% static "jet_django.deps.rest_framework/js/bootstrap.min.js" %}"></script>
