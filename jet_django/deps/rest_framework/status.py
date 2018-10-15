@@ -1,31 +1,31 @@
 """
 Descriptive HTTP status codes, for code readability.
 
-See RFC 2616 - http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-And RFC 6585 - http://tools.ietf.org/html/rfc6585
+See RFC 2616 - https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+And RFC 6585 - https://tools.ietf.org/html/rfc6585
 And RFC 4918 - https://tools.ietf.org/html/rfc4918
 """
 from __future__ import unicode_literals
 
 
 def is_informational(code):
-    return code >= 100 and code <= 199
+    return 100 <= code <= 199
 
 
 def is_success(code):
-    return code >= 200 and code <= 299
+    return 200 <= code <= 299
 
 
 def is_redirect(code):
-    return code >= 300 and code <= 399
+    return 300 <= code <= 399
 
 
 def is_client_error(code):
-    return code >= 400 and code <= 499
+    return 400 <= code <= 499
 
 
 def is_server_error(code):
-    return code >= 500 and code <= 599
+    return 500 <= code <= 599
 
 
 HTTP_100_CONTINUE = 100

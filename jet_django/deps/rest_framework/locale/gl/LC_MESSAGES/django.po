@@ -308,7 +308,7 @@ msgstr ""
 msgid "Value must be valid JSON."
 msgstr ""
 
-#: filters.py:36 templates/rest_framework/filters/django_filter.html:5
+#: filters.py:36 templates/jet_django.deps.rest_framework/filters/django_filter.html:5
 msgid "Submit"
 msgstr ""
 
@@ -364,33 +364,33 @@ msgstr ""
 msgid "Invalid data. Expected a dictionary, but got {datatype}."
 msgstr ""
 
-#: templates/rest_framework/admin.html:116
-#: templates/rest_framework/base.html:128
+#: templates/jet_django.deps.rest_framework/admin.html:116
+#: templates/jet_django.deps.rest_framework/base.html:128
 msgid "Filters"
 msgstr ""
 
-#: templates/rest_framework/filters/django_filter.html:2
-#: templates/rest_framework/filters/django_filter_crispyforms.html:4
+#: templates/jet_django.deps.rest_framework/filters/django_filter.html:2
+#: templates/jet_django.deps.rest_framework/filters/django_filter_crispyforms.html:4
 msgid "Field filters"
 msgstr ""
 
-#: templates/rest_framework/filters/ordering.html:3
+#: templates/jet_django.deps.rest_framework/filters/ordering.html:3
 msgid "Ordering"
 msgstr ""
 
-#: templates/rest_framework/filters/search.html:2
+#: templates/jet_django.deps.rest_framework/filters/search.html:2
 msgid "Search"
 msgstr ""
 
-#: templates/rest_framework/horizontal/radio.html:2
-#: templates/rest_framework/inline/radio.html:2
-#: templates/rest_framework/vertical/radio.html:2
+#: templates/jet_django.deps.rest_framework/horizontal/radio.html:2
+#: templates/jet_django.deps.rest_framework/inline/radio.html:2
+#: templates/jet_django.deps.rest_framework/vertical/radio.html:2
 msgid "None"
 msgstr ""
 
-#: templates/rest_framework/horizontal/select_multiple.html:2
-#: templates/rest_framework/inline/select_multiple.html:2
-#: templates/rest_framework/vertical/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/horizontal/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/inline/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/vertical/select_multiple.html:2
 msgid "No items to select."
 msgstr ""
 

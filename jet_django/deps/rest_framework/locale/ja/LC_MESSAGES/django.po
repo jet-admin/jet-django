@@ -4,13 +4,14 @@
 # 
 # Translators:
 # Hiroaki Nakamura <hnakamur@gmail.com>, 2016
+# Kouichi Nishizawa <kouichi.nishizawa@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: Django REST framework\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-07-12 16:13+0100\n"
-"PO-Revision-Date: 2016-07-12 15:14+0000\n"
-"Last-Translator: Thomas Christie <tom@tomchristie.com>\n"
+"PO-Revision-Date: 2017-08-03 14:58+0000\n"
+"Last-Translator: Kouichi Nishizawa <kouichi.nishizawa@gmail.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/django-rest-framework-1/django-rest-framework/language/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -309,21 +310,21 @@ msgstr "\"{input_type}\" 型のデータではなく項目の辞書を入力し�
 msgid "Value must be valid JSON."
 msgstr "値は有効なJSONでなければなりません。"
 
-#: filters.py:36 templates/rest_framework/filters/django_filter.html:5
+#: filters.py:36 templates/jet_django.deps.rest_framework/filters/django_filter.html:5
 msgid "Submit"
 msgstr "提出"
 
 #: filters.py:336
 msgid "ascending"
-msgstr ""
+msgstr "昇順"
 
 #: filters.py:337
 msgid "descending"
-msgstr ""
+msgstr "降順"
 
 #: pagination.py:193
 msgid "Invalid page."
-msgstr ""
+msgstr "不正なページです。"
 
 #: pagination.py:427
 msgid "Invalid cursor"
@@ -365,33 +366,33 @@ msgstr "不正な値です。"
 msgid "Invalid data. Expected a dictionary, but got {datatype}."
 msgstr "不正なデータです。{datatype} 型ではなく辞書を入力してください。"
 
-#: templates/rest_framework/admin.html:116
-#: templates/rest_framework/base.html:128
+#: templates/jet_django.deps.rest_framework/admin.html:116
+#: templates/jet_django.deps.rest_framework/base.html:128
 msgid "Filters"
 msgstr "フィルタ"
 
-#: templates/rest_framework/filters/django_filter.html:2
-#: templates/rest_framework/filters/django_filter_crispyforms.html:4
+#: templates/jet_django.deps.rest_framework/filters/django_filter.html:2
+#: templates/jet_django.deps.rest_framework/filters/django_filter_crispyforms.html:4
 msgid "Field filters"
 msgstr "フィールドフィルタ"
 
-#: templates/rest_framework/filters/ordering.html:3
+#: templates/jet_django.deps.rest_framework/filters/ordering.html:3
 msgid "Ordering"
 msgstr "順序"
 
-#: templates/rest_framework/filters/search.html:2
+#: templates/jet_django.deps.rest_framework/filters/search.html:2
 msgid "Search"
 msgstr "検索"
 
-#: templates/rest_framework/horizontal/radio.html:2
-#: templates/rest_framework/inline/radio.html:2
-#: templates/rest_framework/vertical/radio.html:2
+#: templates/jet_django.deps.rest_framework/horizontal/radio.html:2
+#: templates/jet_django.deps.rest_framework/inline/radio.html:2
+#: templates/jet_django.deps.rest_framework/vertical/radio.html:2
 msgid "None"
 msgstr "なし"
 
-#: templates/rest_framework/horizontal/select_multiple.html:2
-#: templates/rest_framework/inline/select_multiple.html:2
-#: templates/rest_framework/vertical/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/horizontal/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/inline/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/vertical/select_multiple.html:2
 msgid "No items to select."
 msgstr "選択する項目がありません。"
 
@@ -425,7 +426,7 @@ msgstr "URLパス内のバージョンが不正です。"
 
 #: versioning.py:115
 msgid "Invalid version in URL path. Does not match any version namespace."
-msgstr ""
+msgstr "不正なバージョンのURLのパスです。どのバージョンの名前空間にも一致しません。"
 
 #: versioning.py:147
 msgid "Invalid version in hostname."

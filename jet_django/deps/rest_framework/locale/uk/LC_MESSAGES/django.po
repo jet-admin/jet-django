@@ -3,16 +3,17 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Denis Podlesniy <haos616@gmail.com>, 2016
+# Денис Подлесный <haos616@gmail.com>, 2016
 # Illarion <khlyestovillarion@gmail.com>, 2016
 # Kirill Tarasenko, 2016
+# Victor Mireyev <greymouse2005@ya.ru>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: Django REST framework\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-07-12 16:13+0100\n"
-"PO-Revision-Date: 2016-07-12 15:14+0000\n"
-"Last-Translator: Thomas Christie <tom@tomchristie.com>\n"
+"PO-Revision-Date: 2017-08-03 14:58+0000\n"
+"Last-Translator: Victor Mireyev <greymouse2005@ya.ru>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/django-rest-framework-1/django-rest-framework/language/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -311,17 +312,17 @@ msgstr "Очікувався словник зі елементами, але б
 msgid "Value must be valid JSON."
 msgstr "Значення повинно бути коректним JSON."
 
-#: filters.py:36 templates/rest_framework/filters/django_filter.html:5
+#: filters.py:36 templates/jet_django.deps.rest_framework/filters/django_filter.html:5
 msgid "Submit"
 msgstr "Відправити"
 
 #: filters.py:336
 msgid "ascending"
-msgstr ""
+msgstr "в порядку зростання"
 
 #: filters.py:337
 msgid "descending"
-msgstr ""
+msgstr "у порядку зменшення"
 
 #: pagination.py:193
 msgid "Invalid page."
@@ -367,33 +368,33 @@ msgstr "Недійсне значення."
 msgid "Invalid data. Expected a dictionary, but got {datatype}."
 msgstr "Недопустимі дані. Очікувався словник, але було отримано {datatype}."
 
-#: templates/rest_framework/admin.html:116
-#: templates/rest_framework/base.html:128
+#: templates/jet_django.deps.rest_framework/admin.html:116
+#: templates/jet_django.deps.rest_framework/base.html:128
 msgid "Filters"
 msgstr "Фільтри"
 
-#: templates/rest_framework/filters/django_filter.html:2
-#: templates/rest_framework/filters/django_filter_crispyforms.html:4
+#: templates/jet_django.deps.rest_framework/filters/django_filter.html:2
+#: templates/jet_django.deps.rest_framework/filters/django_filter_crispyforms.html:4
 msgid "Field filters"
 msgstr "Фільтри поля"
 
-#: templates/rest_framework/filters/ordering.html:3
+#: templates/jet_django.deps.rest_framework/filters/ordering.html:3
 msgid "Ordering"
 msgstr "Впорядкування"
 
-#: templates/rest_framework/filters/search.html:2
+#: templates/jet_django.deps.rest_framework/filters/search.html:2
 msgid "Search"
 msgstr "Пошук"
 
-#: templates/rest_framework/horizontal/radio.html:2
-#: templates/rest_framework/inline/radio.html:2
-#: templates/rest_framework/vertical/radio.html:2
+#: templates/jet_django.deps.rest_framework/horizontal/radio.html:2
+#: templates/jet_django.deps.rest_framework/inline/radio.html:2
+#: templates/jet_django.deps.rest_framework/vertical/radio.html:2
 msgid "None"
 msgstr "Нічого"
 
-#: templates/rest_framework/horizontal/select_multiple.html:2
-#: templates/rest_framework/inline/select_multiple.html:2
-#: templates/rest_framework/vertical/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/horizontal/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/inline/select_multiple.html:2
+#: templates/jet_django.deps.rest_framework/vertical/select_multiple.html:2
 msgid "No items to select."
 msgstr "Немає елементів для вибору."
 

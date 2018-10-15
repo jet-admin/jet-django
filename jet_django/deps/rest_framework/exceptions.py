@@ -8,12 +8,14 @@ from __future__ import unicode_literals
 
 import math
 
+from django.http import JsonResponse
 from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext
 
 from jet_django.deps.rest_framework import status
+from jet_django.deps.rest_framework.compat import unicode_to_repr
 from jet_django.deps.rest_framework.utils.serializer_helpers import ReturnDict, ReturnList
 
 
@@ -64,7 +66,7 @@ def _get_full_details(detail):
 
 class ErrorDetail(six.text_type):
     """
-    A string-like object that can additionally
+    A string-like object that can additionally have a code.
     """
     code = None
 
@@ -72,6 +74,22 @@ class ErrorDetail(six.text_type):
         self = super(ErrorDetail, cls).__new__(cls, string)
         self.code = code
         return self
+
+    def __eq__(self, other):
+        r = super(ErrorDetail, self).__eq__(other)
+        try:
+            return r and self.code == other.code
+        except AttributeError:
+            return r
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __repr__(self):
+        return unicode_to_repr('ErrorDetail(string=%r, code=%r)' % (
+            six.text_type(self),
+            self.code,
+        ))
 
 
 class APIException(Exception):
@@ -92,7 +110,7 @@ class APIException(Exception):
         self.detail = _get_error_details(detail, code)
 
     def __str__(self):
-        return self.detail
+        return six.text_type(self.detail)
 
     def get_codes(self):
         """
@@ -123,21 +141,18 @@ class ValidationError(APIException):
     default_detail = _('Invalid input.')
     default_code = 'invalid'
 
-    def __init__(self, detail, code=None):
+    def __init__(self, detail=None, code=None):
         if detail is None:
             detail = self.default_detail
         if code is None:
             code = self.default_code
 
-        # For validation failures, we may collect may errors together, so the
-        # details should always be coerced to a list if not already.
+        # For validation failures, we may collect many errors together,
+        # so the details should always be coerced to a list if not already.
         if not isinstance(detail, dict) and not isinstance(detail, list):
             detail = [detail]
 
         self.detail = _get_error_details(detail, code)
-
-    def __str__(self):
-        return six.text_type(self.detail)
 
 
 class ParseError(APIException):
@@ -221,3 +236,23 @@ class Throttled(APIException):
                                      wait))))
         self.wait = wait
         super(Throttled, self).__init__(detail, code)
+
+
+def server_error(request, *args, **kwargs):
+    """
+    Generic 500 error handler.
+    """
+    data = {
+        'error': 'Server Error (500)'
+    }
+    return JsonResponse(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def bad_request(request, exception, *args, **kwargs):
+    """
+    Generic 400 error handler.
+    """
+    data = {
+        'error': 'Bad Request (400)'
+    }
+    return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)

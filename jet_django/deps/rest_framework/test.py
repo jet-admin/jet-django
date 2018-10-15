@@ -5,14 +5,15 @@
 from __future__ import unicode_literals
 
 import io
+from importlib import import_module
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.handlers.wsgi import WSGIHandler
-from django.test import testcases
+from django.test import override_settings, testcases
 from django.test.client import Client as DjangoClient
-from django.test.client import RequestFactory as DjangoRequestFactory
 from django.test.client import ClientHandler
+from django.test.client import RequestFactory as DjangoRequestFactory
 from django.utils import six
 from django.utils.encoding import force_bytes
 from django.utils.http import urlencode
@@ -174,7 +175,7 @@ class APIRequestFactory(DjangoRequestFactory):
                 "Set TEST_REQUEST_RENDERER_CLASSES to enable "
                 "extra request formats.".format(
                     format,
-                    ', '.join(["'" + fmt + "'" for fmt in self.renderer_classes.keys()])
+                    ', '.join(["'" + fmt + "'" for fmt in self.renderer_classes])
                 )
             )
 
@@ -226,6 +227,15 @@ class APIRequestFactory(DjangoRequestFactory):
     def options(self, path, data=None, format=None, content_type=None, **extra):
         data, content_type = self._encode_data(data, format, content_type)
         return self.generic('OPTIONS', path, data, content_type, **extra)
+
+    def generic(self, method, path, data='',
+                content_type='application/octet-stream', secure=False, **extra):
+        # Include the CONTENT_TYPE, regardless of whether or not data is empty.
+        if content_type is not None:
+            extra['CONTENT_TYPE'] = str(content_type)
+
+        return super(APIRequestFactory, self).generic(
+            method, path, data, content_type, secure, **extra)
 
     def request(self, **kwargs):
         request = super(APIRequestFactory, self).request(**kwargs)
@@ -349,3 +359,44 @@ class APISimpleTestCase(testcases.SimpleTestCase):
 
 class APILiveServerTestCase(testcases.LiveServerTestCase):
     client_class = APIClient
+
+
+class URLPatternsTestCase(testcases.SimpleTestCase):
+    """
+    Isolate URL patterns on a per-TestCase basis. For example,
+
+    class ATestCase(URLPatternsTestCase):
+        urlpatterns = [...]
+
+        def test_something(self):
+            ...
+
+    class AnotherTestCase(URLPatternsTestCase):
+        urlpatterns = [...]
+
+        def test_something_else(self):
+            ...
+    """
+    @classmethod
+    def setUpClass(cls):
+        # Get the module of the TestCase subclass
+        cls._module = import_module(cls.__module__)
+        cls._override = override_settings(ROOT_URLCONF=cls.__module__)
+
+        if hasattr(cls._module, 'urlpatterns'):
+            cls._module_urlpatterns = cls._module.urlpatterns
+
+        cls._module.urlpatterns = cls.urlpatterns
+
+        cls._override.enable()
+        super(URLPatternsTestCase, cls).setUpClass()
+
+    @classmethod
+    def tearDownClass(cls):
+        super(URLPatternsTestCase, cls).tearDownClass()
+        cls._override.disable()
+
+        if hasattr(cls, '_module_urlpatterns'):
+            cls._module.urlpatterns = cls._module_urlpatterns
+        else:
+            del cls._module.urlpatterns
