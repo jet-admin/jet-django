@@ -22,7 +22,7 @@ from __future__ import unicode_literals
 
 from importlib import import_module
 
-from django.conf import settings
+from jet_django import settings
 from django.test.signals import setting_changed
 from django.utils import six
 
@@ -208,7 +208,7 @@ class APISettings(object):
     @property
     def user_settings(self):
         if not hasattr(self, '_user_settings'):
-            self._user_settings = getattr(settings, 'jet_django.deps.rest_framework', {})
+            self._user_settings = getattr(settings, 'JET_REST_FRAMEWORK', {})
         return self._user_settings
 
     def __getattr__(self, attr):
