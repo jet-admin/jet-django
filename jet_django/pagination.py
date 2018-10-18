@@ -22,15 +22,19 @@ class CustomPaginator(Paginator):
     @cached_property
     def count(self):
         query = self.object_list.query
+        result = None
 
         if not query.where:
             try:
                 if connection.vendor == 'postgresql':
-                    return self.count_for_postgresql(query.model._meta.db_table)
+                    result = self.count_for_postgresql(query.model._meta.db_table)
                 elif connection.vendor == 'mysql':
-                    return self.count_for_mysql(query.model._meta.db_table)
+                    result = self.count_for_mysql(query.model._meta.db_table)
             except:
                 pass
+
+        if result is not None and result >= 10000:
+            return result
 
         return super(CustomPaginator, self).count
 
