@@ -32,6 +32,12 @@ def register_token():
     return token, True
 
 
+def reset_token():
+    Token.objects.all().delete()
+
+    return register_token()
+
+
 def project_auth(token, permission=None):
     project_token = Token.objects.all().first()
 
