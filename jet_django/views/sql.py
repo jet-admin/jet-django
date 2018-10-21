@@ -33,7 +33,7 @@ class SqlView(CORSAPIViewMixin, views.APIView):
         with connection.cursor() as cursor:
             try:
                 cursor.execute(serializer.data['query'], serializer.data.get('params', []))
-            except DatabaseError as e:
+            except (DatabaseError, TypeError) as e:
                 raise SqlError(e)
             rows = cursor.fetchall()
 
