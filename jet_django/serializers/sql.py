@@ -1,5 +1,9 @@
-from jet_django.deps.rest_framework import serializers
-from jet_django.deps.rest_framework.exceptions import ValidationError
+from django.db import connection, DatabaseError
+from django.utils import six
+from django.utils.translation import ugettext_lazy as _
+
+from jet_django.deps.rest_framework import serializers, status
+from jet_django.deps.rest_framework.exceptions import ValidationError, APIException
 
 
 class ParamsSerializers(serializers.CharField):
@@ -9,6 +13,18 @@ class ParamsSerializers(serializers.CharField):
 
     def to_representation(self, value):
         return list(value)
+
+
+class SqlError(APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = _('Query failed')
+    default_code = 'invalid'
+
+    def __init__(self, detail):
+        self.detail = {'error': str(detail)}
+
+    def __str__(self):
+        return six.text_type(self.detail)
 
 
 class SqlSerializer(serializers.Serializer):
@@ -22,3 +38,19 @@ class SqlSerializer(serializers.Serializer):
         if any(map(lambda x: ' {} '.format(value.lower()).find(' {} '.format(x)) != -1, forbidden)):
             raise ValidationError('forbidden query')
         return value
+
+    def execute(self):
+        with connection.cursor() as cursor:
+            try:
+                cursor.execute(self.validated_data['query'], self.validated_data.get('params', []))
+            except (DatabaseError, TypeError) as e:
+                raise SqlError(e)
+
+            rows = cursor.fetchall()
+
+            def map_column(x):
+                if x.name == '?column?':
+                    return
+                return x.name
+
+            return {'data': rows, 'columns': map(map_column, cursor.description)}
