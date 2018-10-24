@@ -24,7 +24,7 @@ Description
 
 – **Customizable**. Flex functions allow you to solve your specific business tasks when standard functionality is not enough.
 
-This is a complete remake of **Django Jet** admin interface (https://github.com/geex-arts/django-jet)
+This is a complete remake of popular `Django Jet <https://github.com/geex-arts/django-jet>`_ admin interface.
 
 Features
 ========
@@ -72,8 +72,8 @@ Features
 Requirements
 ============
 
-- **Python** – 3.4, 3.5, 3.6, 3.7, ...
-- **Django** – 1.11, 2.0, 2.1, ...
+- **Python** – 3.4, 3.5, 3.6, 3.7
+- **Django** – 1.11, 2.0, 2.1
 
 Installation
 ============
