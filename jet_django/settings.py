@@ -12,14 +12,14 @@ JET_REST_FRAMEWORK = getattr(settings, 'JET_REST_FRAMEWORK', {
         'jet_django.deps.django_filters.rest_framework.DjangoFilterBackend',
         'jet_django.deps.rest_framework.filters.OrderingFilter',
     ),
-    'DEFAULT_THROTTLE_CLASSES': (
-        'jet_django.deps.rest_framework.throttling.AnonRateThrottle',
-        'jet_django.deps.rest_framework.throttling.UserRateThrottle'
-    ),
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '120/minute',
-        'user': '480/minute'
-    },
+    # 'DEFAULT_THROTTLE_CLASSES': (
+    #     'jet_django.deps.rest_framework.throttling.AnonRateThrottle',
+    #     'jet_django.deps.rest_framework.throttling.UserRateThrottle'
+    # ),
+    # 'DEFAULT_THROTTLE_RATES': {
+    #     'anon': '120/minute',
+    #     'user': '480/minute'
+    # },
     'DEFAULT_RENDERER_CLASSES': (
         'jet_django.deps.rest_framework.renderers.JSONRenderer',
     ),
