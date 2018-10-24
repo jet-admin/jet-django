@@ -6,7 +6,7 @@ from jet_django.deps import django_filters
 from django.db import models
 from django.db.models import Q, fields, base
 from django.contrib.admin.utils import flatten
-from jet_django.deps.django_filters import filters
+from jet_django.deps.django_filters import rest_framework as filters
 from jet_django.deps.django_filters.constants import EMPTY_VALUES
 from django.db.models.fields.related import ForeignObjectRel
 from jet_django.deps.django_filters.utils import resolve_field, get_model_field
@@ -115,6 +115,9 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
                     'extra': lambda f: {
                         'input_formats': ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
                     }
+                },
+                models.BooleanField: {
+                    'filter_class': filters.BooleanFilter
                 },
             }
 
