@@ -36,8 +36,8 @@ class GroupSerializer(serializers.Serializer):
         super().__init__(*args, **kwargs)
 
 
-def model_viewset_factory(build_model, build_filter_class, build_serializer_class, build_detail_serializer_class, build_queryset, build_actions, ordering_field):
-    ReorderSerializer = reorder_serializer_factory(build_queryset, ordering_field)
+def model_viewset_factory(build_model, build_filter_class, build_serializer_class, build_detail_serializer_class, build_queryset, build_actions):
+    ReorderSerializer = reorder_serializer_factory(build_queryset)
 
     class Viewset(CORSAPIViewMixin, viewsets.ModelViewSet):
         model = build_model
@@ -157,7 +157,7 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
         def reset_order(self, request, *args, **kwargs):
             i = 1
             for instance in build_queryset:
-                setattr(instance, ordering_field, i)
+                setattr(instance, request.data.get('ordering_field'), i)
                 instance.save()
                 i += 1
             return Response({})
