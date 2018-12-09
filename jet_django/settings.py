@@ -5,7 +5,7 @@ JET_BACKEND_WEB_BASE_URL = getattr(settings, 'JET_BACKEND_WEB_BASE_URL', 'https:
 JET_DEMO = getattr(settings, 'JET_DEMO', False)
 
 JET_REST_FRAMEWORK = getattr(settings, 'JET_REST_FRAMEWORK', {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'jet_django.deps.rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 25,
     'DEFAULT_AUTHENTICATION_CLASSES': (),
     'DEFAULT_FILTER_BACKENDS': (

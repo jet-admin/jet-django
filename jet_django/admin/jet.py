@@ -4,8 +4,8 @@ from jet_django.admin.model_description import JetAdminModelDescription
 class JetAdmin(object):
     models = []
 
-    def register(self, Model, fields=None, actions=list(), ordering_field=None, hidden=False):
-        self.models.append(JetAdminModelDescription(Model, fields, actions, ordering_field, hidden))
+    def register(self, Model, fields=None, actions=list(), hidden=False):
+        self.models.append(JetAdminModelDescription(Model, fields, actions, hidden))
 
     def register_related_models(self):
         def model_key(x):

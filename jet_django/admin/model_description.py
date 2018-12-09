@@ -9,7 +9,7 @@ from jet_django.views.model import model_viewset_factory
 
 
 class JetAdminModelDescription(object):
-    def __init__(self, Model, fields=None, actions=list(), ordering_field=None, hidden=False):
+    def __init__(self, Model, fields=None, actions=list(), hidden=False):
         self.model = Model
         self.fields = fields
         self.hidden = hidden
@@ -18,9 +18,6 @@ class JetAdminModelDescription(object):
             action.init_meta()
 
         self.actions = actions
-        self.ordering_field = ordering_field \
-            if ordering_field in map(lambda x: x.name, self.get_model_fields()) \
-            else None
         self.content_type = ContentType.objects.get_for_model(Model)
         self.field_names = list(map(lambda x: x.name, self.get_display_model_fields()))
         self.serializer = model_serializer_factory(Model, self.field_names)
@@ -33,8 +30,7 @@ class JetAdminModelDescription(object):
             self.serializer,
             self.detail_serializer,
             self.queryset,
-            self.actions,
-            self.ordering_field
+            self.actions
         )
 
     @property
@@ -81,9 +77,7 @@ class JetAdminModelDescription(object):
     def get_display_model_fields(self):
         fields = self.get_model_fields()
         def filter_fields(x):
-            if x.name == self.ordering_field:
-                return True
-            elif self.fields:
+            if self.fields:
                 return x.name in self.fields
             return True
         return filter(filter_fields, fields)
@@ -126,8 +120,7 @@ class JetAdminModelDescription(object):
                     'related_model': self.serialize_model(field[1].queryset.model) if hasattr(field[1], 'queryset') else None,
                     'field': field[1].__class__.__name__
                 }, action.get_fields().items()),
-            }, map(lambda action: action(), self.actions)),
-            'ordering_field': self.ordering_field
+            }, map(lambda action: action(), self.actions))
         }
 
     def get_model(self):
