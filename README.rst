@@ -116,7 +116,7 @@ Installation
 
 **5. Restart your project**
 
-**6. Open https://YOUR_PROJECT_URL/jet_api/register/ in browser to create a project**
+**6. Open YOUR_PROJECT_URL/jet_api/register/ in browser to create a project**
 
 Support
 =======
