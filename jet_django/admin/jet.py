@@ -3,6 +3,7 @@ from jet_django.admin.model_description import JetAdminModelDescription
 
 class JetAdmin(object):
     models = []
+    message_handlers = {}
 
     def register(self, Model, fields=None, actions=list(), hidden=False):
         self.models.append(JetAdminModelDescription(Model, fields, actions, hidden))
@@ -24,5 +25,11 @@ class JetAdmin(object):
 
                 self.register(item['model'], hidden=True)
                 registered.add(key)
+
+    def add_message_handler(self, message_name, func):
+        self.message_handlers[message_name] = func
+
+    def get_message_handler(self, message_name):
+        return self.message_handlers.get(message_name)
 
 jet = JetAdmin()

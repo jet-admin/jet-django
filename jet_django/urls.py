@@ -7,6 +7,7 @@ from jet_django.views.model_description import ModelDescriptionView
 from jet_django.views.register import RegisterView
 from jet_django.views.root import RootView
 from jet_django.views.sql import SqlView
+from jet_django.views.message import MessageView
 
 app_name = 'jet_django'
 
@@ -27,6 +28,7 @@ def init_urls():
         url(r'^register/', RegisterView.as_view(), name='register'),
         url(r'^sql/', SqlView.as_view(), name='sql'),
         url(r'^file_upload/', FileUploadView.as_view(), name='file-upload'),
+        url(r'^messages/', MessageView.as_view(), name='message'),
         url(r'^$', RootView.as_view(), name='root')
     ]
 
