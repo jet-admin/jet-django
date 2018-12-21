@@ -51,7 +51,7 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
         def required_project_permission(self):
             return {
                 'permission_type': 'model',
-                'permission_object': ';'.join([self.kwargs['app_label'], self.kwargs['model']]),
+                'permission_object': self.kwargs['model'],
                 'permission_actions': {
                     'create': 'w',
                     'update': 'w',
