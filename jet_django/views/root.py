@@ -8,5 +8,6 @@ from jet_django.mixins.cors_api_view import CORSAPIViewMixin
 class RootView(CORSAPIViewMixin, views.APIView):
     def get(self, request, *args, **kwargs):
         return Response({
-            'version': VERSION
+            'version': VERSION,
+            'type': 'jet_django'
         })
