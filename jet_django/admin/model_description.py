@@ -35,7 +35,7 @@ class JetAdminModelDescription(object):
 
     @property
     def viewset_url(self):
-        return 'models/(?P<app_label>{})/(?P<model>{})'.format(self.content_type.app_label, self.content_type.model)
+        return 'models/(?P<model>{};{})'.format(self.content_type.app_label, self.content_type.model)
 
     def get_model_fields(self):
         fields = self.model._meta.get_fields()
@@ -84,8 +84,7 @@ class JetAdminModelDescription(object):
 
     def serialize(self):
         return {
-            'model': self.content_type.model,
-            'app_label': self.content_type.app_label,
+            'model': '{};{}'.format(self.content_type.app_label, self.content_type.model),
             'db_table': self.model._meta.db_table,
             'verbose_name': self.model._meta.verbose_name,
             'verbose_name_plural': self.model._meta.verbose_name_plural,
@@ -125,8 +124,7 @@ class JetAdminModelDescription(object):
 
     def get_model(self):
         return {
-            'model': self.content_type.model,
-            'app_label': self.content_type.app_label,
+            'model': '{};{}'.format(self.content_type.app_label, self.content_type.model)
         }
 
     def get_related_models(self):
@@ -140,6 +138,5 @@ class JetAdminModelDescription(object):
             return
         content_type = ContentType.objects.get_for_model(Model)
         return {
-            'model': content_type.model,
-            'app_label': content_type.app_label
+            'model': '{};{}'.format(content_type.app_label, content_type.model),
         }

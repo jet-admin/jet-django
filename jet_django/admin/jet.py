@@ -10,10 +10,7 @@ class JetAdmin(object):
 
     def register_related_models(self):
         def model_key(x):
-            return '{}_{}'.format(
-                x['app_label'],
-                x['model']
-            )
+            return x['model']
         registered = set(map(lambda x: model_key(x.get_model()), self.models))
 
         for models_description in self.models:
