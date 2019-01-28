@@ -2,12 +2,14 @@ from collections import OrderedDict
 
 
 def get_model_sibling(Model, instance, next, ordering=None):
+    pk = Model._meta.pk.name
+
     if len(Model._meta.ordering):
-        ordering = list(Model._meta.ordering) + ['-id']
+        ordering = list(Model._meta.ordering) + ['-{}'.format(pk)]
     elif ordering is None:
-        ordering = ['-id']
-    elif ordering != ['-id']:
-        ordering = list(ordering) + ['-id']
+        ordering = ['-'.format(pk)]
+    elif ordering != ['-'.format(pk)]:
+        ordering = list(ordering) + ['-{}'.format(pk)]
 
     def inverse_ordering(x):
         if x[0:1] == '-':
@@ -32,11 +34,14 @@ def get_model_sibling(Model, instance, next, ordering=None):
     found_instance = False
     sibling = None
 
-    for item in Model.objects.filter(**params).order_by(*ordering).all():
-        if item.pk == instance.pk:
-            found_instance = True
-        elif found_instance:
-            sibling = item
-            break
+    try:
+        for item in Model.objects.filter(**params).order_by(*ordering).all():
+            if item.pk == instance.pk:
+                found_instance = True
+            elif found_instance:
+                sibling = item
+                break
+    except:
+        pass
 
     return sibling
