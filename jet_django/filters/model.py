@@ -10,6 +10,7 @@ from jet_django.deps.django_filters import rest_framework as filters
 from jet_django.deps.django_filters.constants import EMPTY_VALUES
 from django.db.models.fields.related import ForeignObjectRel
 from jet_django.deps.django_filters.utils import resolve_field, get_model_field
+from jet_django.serializers.sql import SqlSerializer
 
 
 def model_filter_class_factory(build_model, model_fields, model_relations):
@@ -95,10 +96,42 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
 
             return qs
 
+    class ModelSegmentFilter(django_filters.CharFilter):
+
+        def filter(self, qs, value):
+            if value in EMPTY_VALUES:
+                return qs
+
+            body = self.parent.request.data
+
+            if not isinstance(body, dict):
+                return qs.none()
+
+            items = list(filter(lambda x: x.get('name') == value, body.get('segments', [])))
+
+            if len(items) == 0:
+                return qs.none()
+
+            query = items[0].get('query')
+
+            serializer = SqlSerializer(data={'query': query})
+            serializer.is_valid(raise_exception=True)
+            result = serializer.execute()
+            columns = list(result['columns'])
+            rows = result['data']
+
+            if len(columns) == 0 or len(rows) == 0:
+                return qs.none()
+
+            ids = list(map(lambda x: list(x)[0], rows))
+
+            return qs.filter(pk__in=ids)
+
     class FilterSet(django_filters.FilterSet):
         _order_by = filters.OrderingFilter(fields=filter_field_names)
         _search = SearchFilter()
         _m2m = M2MFilter()
+        _segment = ModelSegmentFilter()
 
         class Meta:
             model = build_model
