@@ -11,6 +11,7 @@ from jet_django.mixins.method_override import MethodOverrideViewMixin
 from jet_django.pagination import CustomPageNumberPagination
 from jet_django.permissions import HasProjectPermissions, ModifyNotInDemo
 from jet_django.serializers.reorder import reorder_serializer_factory
+from jet_django.serializers.reset_order import reset_order_serializer_factory
 
 
 class AggregateSerializer(serializers.Serializer):
@@ -39,6 +40,7 @@ class GroupSerializer(serializers.Serializer):
 
 def model_viewset_factory(build_model, build_filter_class, build_serializer_class, build_detail_serializer_class, build_queryset, build_actions):
     ReorderSerializer = reorder_serializer_factory(build_queryset)
+    ResetOrderSerializer = reset_order_serializer_factory(build_queryset)
 
     class Viewset(MethodOverrideViewMixin, CORSAPIViewMixin, viewsets.ModelViewSet):
         model = build_model
@@ -156,12 +158,10 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
 
         @list_route(methods=['post'])
         def reset_order(self, request, *args, **kwargs):
-            i = 1
-            for instance in build_queryset:
-                setattr(instance, request.data.get('ordering_field'), i)
-                instance.save()
-                i += 1
-            return Response({})
+            serializer = ResetOrderSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
 
     for action in build_actions:
         def route(self, request):
