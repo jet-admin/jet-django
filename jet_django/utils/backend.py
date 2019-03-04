@@ -1,7 +1,10 @@
+import logging
 import requests
 
 from jet_django import settings
 from jet_django.models.token import Token
+
+logger = logging.getLogger('jet_django')
 
 
 def api_method_url(method):
@@ -12,6 +15,7 @@ def register_token():
     token = Token.objects.all().first()
 
     if token:
+        logger.info('[JET] Token already registered')
         return token, False
 
     url = api_method_url('project_tokens/')
@@ -23,7 +27,7 @@ def register_token():
     success = 200 <= r.status_code < 300
 
     if not success:
-        print('Register Token request error', r.status_code, r.reason)
+        logger.error('[JET] Register Token request error: %s %s %s', r.status_code, r.reason, r.text)
         return None, False
 
     result = r.json()
@@ -42,6 +46,7 @@ def project_auth(token, permission=None):
     project_token = Token.objects.all().first()
 
     if not project_token:
+        logger.error('[JET] Project Auth request error: not token registered')
         return {
             'result': False
         }
@@ -62,7 +67,7 @@ def project_auth(token, permission=None):
     success = 200 <= r.status_code < 300
 
     if not success:
-        print('Project Auth request error', r.status_code, r.reason)
+        logger.error('[JET] Project Auth request error: %s %s %s', r.status_code, r.reason, r.text)
         return {
             'result': False
         }
@@ -70,6 +75,7 @@ def project_auth(token, permission=None):
     result = r.json()
 
     if result.get('access_disabled'):
+        logger.error('[JET] Project Auth request error: access_disabled')
         return {
             'result': False,
             'warning': result.get('warning')
