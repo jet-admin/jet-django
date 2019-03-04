@@ -1,6 +1,8 @@
 from django.apps import AppConfig
 from django.apps import apps
 
+from jet_django import settings
+
 
 class JetDjangoConfig(AppConfig):
     name = 'jet_django'
@@ -17,7 +19,8 @@ class JetDjangoConfig(AppConfig):
         except:  # if no migrations yet
             pass
 
-        try:
-            register_token()
-        except:  # if no migrations yet
-            pass
+        if settings.JET_REGISTER_TOKEN_ON_START:
+            try:
+                register_token()
+            except:  # if no migrations yet
+                pass
