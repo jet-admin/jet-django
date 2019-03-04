@@ -1,5 +1,10 @@
+import logging
 from django.apps import AppConfig
 from django.apps import apps
+
+from jet_django import settings
+
+logger = logging.getLogger('jet_django')
 
 
 class JetDjangoConfig(AppConfig):
@@ -17,7 +22,9 @@ class JetDjangoConfig(AppConfig):
         except:  # if no migrations yet
             pass
 
-        try:
-            register_token()
-        except:  # if no migrations yet
-            pass
+        if settings.JET_REGISTER_TOKEN_ON_START:
+            try:
+                logger.info('[JET] Checking if token is not registered yet...')
+                register_token()
+            except:  # if no migrations yet
+                pass
