@@ -1,20 +1,27 @@
 from urllib.parse import quote
 
+from django.http import HttpResponseRedirect, JsonResponse
 from django.views import generic
 
 from jet_django import settings
 from jet_django.mixins.cors_api_view import CORSAPIViewMixin
-from jet_django.utils.backend import register_token
+from jet_django.utils.backend import register_token, is_token_activated
 
 
 class RegisterView(CORSAPIViewMixin, generic.RedirectView):
-    def get_redirect_url(self, *args, **kwargs):
+
+    def get(self, request, *args, **kwargs):
         token, created = register_token()
 
         if not token:
             return
 
+        if is_token_activated(token):
+            return JsonResponse({
+                'message': 'Project token is already activated'
+            })
+
         url = '{}/projects/register/{}'.format(settings.JET_BACKEND_WEB_BASE_URL, token.token)
         query_string = 'referrer={}'.format(quote(self.request.build_absolute_uri().encode('utf8')))
 
-        return '%s?%s' % (url, query_string)
+        return HttpResponseRedirect('%s?%s' % (url, query_string))
