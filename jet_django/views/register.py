@@ -21,7 +21,12 @@ class RegisterView(CORSAPIViewMixin, generic.RedirectView):
                 'message': 'Project token is already activated'
             })
 
-        url = '{}/projects/register/{}'.format(settings.JET_BACKEND_WEB_BASE_URL, token.token)
+        if settings.JET_BACKEND_WEB_BASE_URL.startswith('https') and not self.request.is_secure():
+            web_base_url = 'http{}'.format(settings.JET_BACKEND_WEB_BASE_URL[5:])
+        else:
+            web_base_url = settings.JET_BACKEND_WEB_BASE_URL
+
+        url = '{}/projects/register/{}'.format(web_base_url, token.token)
         query_string = 'referrer={}'.format(quote(self.request.build_absolute_uri().encode('utf8')))
 
         return HttpResponseRedirect('%s?%s' % (url, query_string))
