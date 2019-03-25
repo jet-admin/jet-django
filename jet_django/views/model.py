@@ -1,7 +1,8 @@
 from django.core.exceptions import NON_FIELD_ERRORS
 
 from jet_django.deps.rest_framework import status, viewsets, serializers
-from jet_django.deps.rest_framework.decorators import list_route
+from jet_django.deps.rest_framework.decorators import list_route, detail_route
+from jet_django.deps.rest_framework.generics import get_object_or_404
 from jet_django.deps.rest_framework.response import Response
 from jet_django.deps.rest_framework.serializers import ModelSerializer
 from jet_django.filters.model_aggregate import AggregateFilter
@@ -12,6 +13,7 @@ from jet_django.pagination import CustomPageNumberPagination
 from jet_django.permissions import HasProjectPermissions, ModifyNotInDemo
 from jet_django.serializers.reorder import reorder_serializer_factory
 from jet_django.serializers.reset_order import reset_order_serializer_factory
+from jet_django.utils.siblings import get_model_siblings
 
 
 class AggregateSerializer(serializers.Serializer):
@@ -162,6 +164,23 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
+
+        def get_object(self):
+            print('wtf')
+            return super().get_object()
+
+        @detail_route(methods=['get'])
+        def get_siblings(self, request, *args, **kwargs):
+            lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+            filter_kwargs = {self.lookup_field: self.kwargs[lookup_url_kwarg]}
+            obj = get_object_or_404(self.get_queryset(), **filter_kwargs)
+
+            # May raise a permission denied
+            self.check_object_permissions(self.request, obj)
+
+            queryset = self.filter_queryset(self.get_queryset())
+
+            return Response(get_model_siblings(self.model, obj, queryset))
 
     for action in build_actions:
         def route(self, request):
