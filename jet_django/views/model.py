@@ -61,8 +61,8 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
                 if len(ordering) == 0 and len(self.model._meta.ordering):
                     ordering = self.model._meta.ordering
 
-                if not any(map(lambda x: x == pk or x == '-{}'.format(pk), ordering)):
-                    order_by = list(ordering) + ['-{}'.format(pk)]
+                if not any(map(lambda x: x == pk or x == '-{}'.format(pk) or x == '-pk', ordering)):
+                    order_by = list(ordering) + ['-pk']
                     queryset = queryset.order_by(*order_by)
             return queryset
 
