@@ -1,34 +1,38 @@
 from django.db import connection
 from django.db.models.sql import Query
+from django.db.models.sql.datastructures import BaseTable
 
 
-def get_row_number(Model, instance, where_sql, where_args, order_by_sql):
+def get_row_number(Model, instance, join_sql, join_args, where_sql, where_args, order_by_sql):
     pk = Model._meta.pk.name
     table = Model._meta.db_table
 
     with connection.cursor() as cursor:
         query = '''
             SELECT 
-              rows.row 
+              __inner.__inner__row 
             FROM 
               (
                 SELECT 
-                  {} as pk, 
-                  ROW_NUMBER() OVER({}) AS row 
+                  {}.{} as __inner__pk, 
+                  ROW_NUMBER() OVER({}) AS __inner__row
                 FROM 
                   {}
                 {}
-              ) AS rows 
+                {}
+              ) AS __inner 
             WHERE 
-              rows.pk = %s
+              __inner.__inner__pk = %s
         '''.format(
+            table,
             pk,
             order_by_sql,
             table,
+            join_sql,
             where_sql
         )
-
-        cursor.execute(query, where_args + [instance.pk])
+        args = join_args + where_args + [instance.pk]
+        cursor.execute(query, args)
         row = cursor.fetchone()
 
     if not row:
@@ -37,32 +41,36 @@ def get_row_number(Model, instance, where_sql, where_args, order_by_sql):
     return row[0]
 
 
-def get_row_siblings(Model, row_number, where_sql, where_args, order_by_sql):
+def get_row_siblings(Model, row_number, join_sql, join_args, where_sql, where_args, order_by_sql):
     pk = Model._meta.pk.name
     table = Model._meta.db_table
 
-    has_previous = row_number > 1
-    offset = row_number - 2 if has_previous else row_number - 1
-    limit = 3 if has_previous else 2
+    has_prev = row_number > 1
+    offset = row_number - 2 if has_prev else row_number - 1
+    limit = 3 if has_prev else 4
 
     with connection.cursor() as cursor:
         query = '''
-                    SELECT {} 
+                    SELECT {}.{} 
                     FROM {} 
+                    {}
                     {}
                     {} 
                     LIMIT %s 
                     OFFSET %s
                 '''.format(
+            table,
             pk,
             table,
+            join_sql,
             where_sql,
             order_by_sql
         )
-        cursor.execute(query, where_args + [limit, offset])
+        args = join_args + where_args + [limit, offset]
+        cursor.execute(query, args)
         rows = cursor.fetchall()
 
-    if has_previous:
+    if has_prev:
         next_index = 2
     else:
         next_index = 1
@@ -70,7 +78,7 @@ def get_row_siblings(Model, row_number, where_sql, where_args, order_by_sql):
     if next_index >= len(rows):
         next_index = None
 
-    if has_previous:
+    if has_prev:
         prev_index = 0
     else:
         prev_index = None
@@ -90,18 +98,41 @@ def get_model_siblings(Model, instance, queryset):
         asc = x[0:1] != '-'
         name = x if asc else x[1:]
         operator = 'ASC' if asc else 'DESC'
-        return '{} {}'.format(name, operator)
+        return '{}{} {}'.format(alias, name, operator)
 
+    pk = Model._meta.pk.name
     ordering = queryset.query.order_by
+    alias = ''
+
+    if len(ordering) == 0 and len(Model._meta.ordering):
+        ordering = Model._meta.ordering
+
+    if not any(map(lambda x: x == pk or x == '-{}'.format(pk), ordering)):
+        ordering = list(ordering) + ['-{}'.format(pk)]
+
     compiler = Query(Model).get_compiler(connection=connection)
+
+    join_queries = []
+    join_args = []
+
+    for key, value in queryset.query.alias_map.items():
+        if isinstance(value, BaseTable):
+            alias = '{}.'.format(key)
+        else:
+            query, args = value.as_sql(compiler, connection)
+            join_queries.append(query)
+            join_args.extend(args)
+
+    join_sql = ' '.join(join_queries)
+
     where_query, where_args = queryset.query.where.as_sql(compiler, connection)
     where_sql = 'WHERE {}'.format(where_query) if where_query != '' else ''
     order_by = list(map(map_ordering, ordering))
     order_by_sql = 'ORDER BY {}'.format(', '.join(order_by)) if len(order_by) else ''
 
-    row_number = get_row_number(Model, instance, where_sql, where_args, order_by_sql)
+    row_number = get_row_number(Model, instance, join_sql, join_args, where_sql, where_args, order_by_sql)
 
     if not row_number:
         return {}
 
-    return get_row_siblings(Model, row_number, where_sql, where_args, order_by_sql)
+    return get_row_siblings(Model, row_number, join_sql, join_args, where_sql, where_args, order_by_sql)

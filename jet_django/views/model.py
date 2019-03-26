@@ -50,7 +50,16 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
         pagination_class = CustomPageNumberPagination
         filter_class = build_filter_class
         authentication_classes = ()
-        permission_classes = (HasProjectPermissions, ModifyNotInDemo)
+        permission_classes = ()
+
+        def filter_queryset(self, queryset):
+            queryset = super().filter_queryset(queryset)
+            if self.action == 'list':
+                pk = self.model._meta.pk.name
+                if not any(map(lambda x: x == pk or x == '-{}'.format(pk), queryset.query.order_by)):
+                    order_by = list(queryset.query.order_by) + ['-{}'.format(pk)]
+                    queryset = queryset.order_by(*order_by)
+            return queryset
 
         @property
         def required_project_permission(self):
@@ -67,7 +76,8 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
                     'aggregate': 'r',
                     'group': 'r',
                     'reorder': 'w',
-                    'reset_order': 'w'
+                    'reset_order': 'w',
+                    'get_siblings': 'r'
                 }.get(self.action, 'w')
             }
 
@@ -164,10 +174,6 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
-
-        def get_object(self):
-            print('wtf')
-            return super().get_object()
 
         @detail_route(methods=['get'])
         def get_siblings(self, request, *args, **kwargs):
