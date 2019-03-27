@@ -50,7 +50,7 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
         pagination_class = CustomPageNumberPagination
         filter_class = build_filter_class
         authentication_classes = ()
-        permission_classes = ()
+        permission_classes = (HasProjectPermissions, ModifyNotInDemo)
 
         def filter_queryset(self, queryset):
             queryset = super().filter_queryset(queryset)
