@@ -1,6 +1,7 @@
 from django.db import connection
 from django.db.models.sql import Query
 from django.db.models.sql.datastructures import BaseTable
+from django.db.models.sql.compiler import SQLCompiler
 
 
 def get_row_number(Model, instance, join_sql, join_args, where_sql, where_args, order_by_sql):
@@ -47,7 +48,7 @@ def get_row_siblings(Model, row_number, join_sql, join_args, where_sql, where_ar
 
     has_prev = row_number > 1
     offset = row_number - 2 if has_prev else row_number - 1
-    limit = 3 if has_prev else 4
+    limit = 3 if has_prev else 2
 
     with connection.cursor() as cursor:
         query = '''
@@ -93,31 +94,13 @@ def get_row_siblings(Model, row_number, join_sql, join_args, where_sql, where_ar
     }
 
 
-def get_model_siblings(Model, instance, queryset):
-    def map_ordering(x):
-        asc = x[0:1] != '-'
-        name = x if asc else x[1:]
-        operator = 'ASC' if asc else 'DESC'
-        return '{}{} {}'.format(alias, name, operator)
-
-    pk = Model._meta.pk.name
-    ordering = queryset.query.order_by
-    alias = ''
-
-    if len(ordering) == 0 and len(Model._meta.ordering):
-        ordering = Model._meta.ordering
-
-    if not any(map(lambda x: x == pk or x == '-{}'.format(pk), ordering)):
-        ordering = list(ordering) + ['-{}'.format(pk)]
-
-    compiler = Query(Model).get_compiler(connection=connection)
-
+def create_joins(queryset, compiler):
     join_queries = []
     join_args = []
 
     for key, value in queryset.query.alias_map.items():
         if isinstance(value, BaseTable):
-            alias = '{}.'.format(key)
+            continue
         else:
             query, args = value.as_sql(compiler, connection)
             join_queries.append(query)
@@ -125,10 +108,44 @@ def get_model_siblings(Model, instance, queryset):
 
     join_sql = ' '.join(join_queries)
 
+    return join_sql, join_args
+
+
+def create_where(queryset, compiler):
     where_query, where_args = queryset.query.where.as_sql(compiler, connection)
-    where_sql = 'WHERE {}'.format(where_query) if where_query != '' else ''
-    order_by = list(map(map_ordering, ordering))
-    order_by_sql = 'ORDER BY {}'.format(', '.join(order_by)) if len(order_by) else ''
+    return 'WHERE {}'.format(where_query) if where_query != '' else '', where_args
+
+
+def create_order_by(compiler):
+    compiler_order_by = compiler.get_order_by()
+
+    if not compiler_order_by:
+        compiler_order_by = []
+
+    ordering = []
+    for _, (o_sql, o_params, _) in compiler_order_by:
+        ordering.append(o_sql)
+
+    return 'ORDER BY %s' % ', '.join(ordering)
+
+
+def get_model_siblings(Model, instance, queryset):
+    pk = Model._meta.pk.name
+    ordering = queryset.query.order_by
+
+    if len(ordering) == 0 and len(Model._meta.ordering):
+        ordering = Model._meta.ordering
+
+    if not any(map(lambda x: x == pk or x == '-{}'.format(pk), ordering)):
+        ordering = list(ordering) + ['-{}'.format(pk)]
+
+    queryset.query.order_by = ordering
+    compiler = SQLCompiler(queryset.query, connection, queryset.db)
+    compiler.as_sql()
+
+    join_sql, join_args = create_joins(queryset, compiler)
+    where_sql, where_args = create_where(queryset, compiler)
+    order_by_sql = create_order_by(compiler)
 
     row_number = get_row_number(Model, instance, join_sql, join_args, where_sql, where_args, order_by_sql)
 

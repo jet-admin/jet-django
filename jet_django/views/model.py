@@ -50,14 +50,19 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
         pagination_class = CustomPageNumberPagination
         filter_class = build_filter_class
         authentication_classes = ()
-        permission_classes = ()
+        permission_classes = (HasProjectPermissions, ModifyNotInDemo)
 
         def filter_queryset(self, queryset):
             queryset = super().filter_queryset(queryset)
             if self.action == 'list':
                 pk = self.model._meta.pk.name
-                if not any(map(lambda x: x == pk or x == '-{}'.format(pk), queryset.query.order_by)):
-                    order_by = list(queryset.query.order_by) + ['-{}'.format(pk)]
+                ordering = queryset.query.order_by
+
+                if len(ordering) == 0 and len(self.model._meta.ordering):
+                    ordering = self.model._meta.ordering
+
+                if not any(map(lambda x: x == pk or x == '-{}'.format(pk) or x == '-pk', ordering)):
+                    order_by = list(ordering) + ['-pk']
                     queryset = queryset.order_by(*order_by)
             return queryset
 
