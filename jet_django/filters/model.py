@@ -158,7 +158,7 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
         filter_overrides_value[PointField] = {
             'filter_class': GEOSGeometryFilter
         }
-    except ImportError:
+    except:
         pass
 
     class FilterSet(django_filters.FilterSet):
