@@ -10,6 +10,7 @@ from jet_django.deps.django_filters import rest_framework as filters
 from jet_django.deps.django_filters.constants import EMPTY_VALUES
 from django.db.models.fields.related import ForeignObjectRel
 from jet_django.deps.django_filters.utils import resolve_field, get_model_field
+from jet_django.filters.geos_geometry import GEOSGeometryFilter
 from jet_django.serializers.sql import SqlSerializer
 
 
@@ -17,6 +18,13 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
     model_fields = list(model_fields)
 
     def filter_field(field):
+        try:
+            from django.contrib.gis.db.models import PointField
+            if isinstance(field, PointField):
+                return True
+        except:
+            pass
+
         try:
             django_filters.FilterSet.filter_for_field(field, field.name)
             return True
@@ -127,6 +135,32 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
 
             return qs.filter(pk__in=ids)
 
+    filter_overrides_value = {
+        models.DateTimeField: {
+            'filter_class': filters.DateTimeFilter,
+            'extra': lambda f: {
+                'input_formats': ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
+            }
+        },
+        models.DateField: {
+            'filter_class': filters.DateFilter,
+            'extra': lambda f: {
+                'input_formats': ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
+            }
+        },
+        models.BooleanField: {
+            'filter_class': filters.BooleanFilter
+        }
+    }
+
+    try:
+        from django.contrib.gis.db.models import PointField
+        filter_overrides_value[PointField] = {
+            'filter_class': GEOSGeometryFilter
+        }
+    except ImportError:
+        pass
+
     class FilterSet(django_filters.FilterSet):
         _order_by = filters.OrderingFilter(fields=filter_field_names)
         _search = SearchFilter()
@@ -136,23 +170,7 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
         class Meta:
             model = build_model
             fields = filter_fields
-            filter_overrides = {
-                models.DateTimeField: {
-                    'filter_class': filters.DateTimeFilter,
-                    'extra': lambda f: {
-                        'input_formats': ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
-                    }
-                },
-                models.DateField: {
-                    'filter_class': filters.DateFilter,
-                    'extra': lambda f: {
-                        'input_formats': ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
-                    }
-                },
-                models.BooleanField: {
-                    'filter_class': filters.BooleanFilter
-                },
-            }
+            filter_overrides = filter_overrides_value
 
         @classmethod
         def get_filters(cls):
