@@ -24,7 +24,7 @@ def reset_order_serializer_factory(build_queryset):
                     __custom_order__=Case(
                         *[When(**dict([(field, x), ('then', Value(i))])) for i, x in enumerate(values)],
                         default=Value(len(values)),
-                        output_field=IntegerField(),
+                        output_field=IntegerField()
                     )
                 )
                 order_by.append('__custom_order__')
