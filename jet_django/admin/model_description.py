@@ -9,15 +9,11 @@ from jet_django.views.model import model_viewset_factory
 
 
 class JetAdminModelDescription(object):
-    def __init__(self, Model, fields=None, actions=list(), hidden=False):
+    def __init__(self, Model, fields=None, hidden=False):
         self.model = Model
         self.fields = fields
         self.hidden = hidden
 
-        for action in actions:
-            action.init_meta()
-
-        self.actions = actions
         self.content_type = ContentType.objects.get_for_model(Model)
         self.field_names = list(map(lambda x: x.name, self.get_display_model_fields()))
         self.serializer = model_serializer_factory(Model, self.field_names)
@@ -29,8 +25,7 @@ class JetAdminModelDescription(object):
             self.filter_class,
             self.serializer,
             self.detail_serializer,
-            self.queryset,
-            self.actions
+            self.queryset
         )
 
     @property
@@ -111,17 +106,7 @@ class JetAdminModelDescription(object):
                 'field': field.__class__.__name__,
                 'related_model_field': field.remote_field.name,
                 'through': self.get_model_relation_through(field)
-            }, self.get_model_relations()),
-            'actions': map(lambda action: {
-                'name': action._meta.name,
-                'verbose_name': action._meta.verbose_name,
-                'fields': map(lambda field: {
-                    'name': field[0],
-                    'verbose_name': field[1].label or field[0],
-                    'related_model': self.serialize_model(field[1].queryset.model) if hasattr(field[1], 'queryset') else None,
-                    'field': field[1].__class__.__name__
-                }, action.get_fields().items()),
-            }, map(lambda action: action(), self.actions))
+            }, self.get_model_relations())
         }
 
     def get_model(self):
