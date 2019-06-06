@@ -95,6 +95,8 @@ class JetAdminModelDescription(object):
                 'verbose_name': field.verbose_name,
                 'is_relation': field.is_relation,
                 'field': field.__class__.__name__,
+                'required': not field.blank,
+                'null': field.null,
                 'editable': field.editable,
                 'filterable': field.name in self.filter_class.Meta.fields,
                 'params': {
