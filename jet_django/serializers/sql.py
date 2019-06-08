@@ -39,10 +39,10 @@ class SqlSerializer(serializers.Serializer):
             raise ValidationError('forbidden query')
         return value
 
-    def execute(self):
+    def execute(self, data):
         with connection.cursor() as cursor:
             try:
-                cursor.execute(self.validated_data['query'], self.validated_data.get('params', []))
+                cursor.execute(data['query'], data.get('params', []))
             except (DatabaseError, TypeError) as e:
                 raise SqlError(e)
 
@@ -54,3 +54,11 @@ class SqlSerializer(serializers.Serializer):
                 return x.name
 
             return {'data': rows, 'columns': map(map_column, cursor.description)}
+
+
+class SqlsSerializer(serializers.Serializer):
+    queries = SqlSerializer(many=True)
+
+    def execute(self, data):
+        serializer = SqlSerializer()
+        return map(lambda x: serializer.execute(x), data['queries'])

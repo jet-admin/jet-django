@@ -1,6 +1,4 @@
-from django.core.exceptions import NON_FIELD_ERRORS
-
-from jet_django.deps.rest_framework import status, viewsets, serializers
+from jet_django.deps.rest_framework import viewsets, serializers
 from jet_django.deps.rest_framework.decorators import list_route, detail_route
 from jet_django.deps.rest_framework.generics import get_object_or_404
 from jet_django.deps.rest_framework.response import Response
@@ -40,7 +38,7 @@ class GroupSerializer(serializers.Serializer):
         super().__init__(*args, **kwargs)
 
 
-def model_viewset_factory(build_model, build_filter_class, build_serializer_class, build_detail_serializer_class, build_queryset, build_actions):
+def model_viewset_factory(build_model, build_filter_class, build_serializer_class, build_detail_serializer_class, build_queryset):
     ReorderSerializer = reorder_serializer_factory(build_queryset)
     ResetOrderSerializer = reset_order_serializer_factory(build_queryset)
 
@@ -192,26 +190,5 @@ def model_viewset_factory(build_model, build_filter_class, build_serializer_clas
             queryset = self.filter_queryset(self.get_queryset())
 
             return Response(get_model_siblings(self.model, obj, queryset))
-
-    for action in build_actions:
-        def route(self, request):
-            form = action(data=request.data)
-
-            if not form.is_valid():
-                return Response(form.errors, status=status.HTTP_400_BAD_REQUEST)
-
-            queryset = form.filer_queryset(self.get_queryset())
-
-            try:
-                result = form.save(queryset)
-            except Exception as e:
-                return Response({NON_FIELD_ERRORS: str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-            return Response({'action': form._meta.name, 'result': result})
-
-        decorator = list_route(methods=['post'])
-        route = decorator(route)
-
-        setattr(Viewset, action._meta.name, route)
 
     return Viewset

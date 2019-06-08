@@ -5,8 +5,8 @@ class JetAdmin(object):
     models = []
     message_handlers = {}
 
-    def register(self, Model, fields=None, actions=list(), hidden=False):
-        self.models.append(JetAdminModelDescription(Model, fields, actions, hidden))
+    def register(self, Model, fields=None, hidden=False):
+        self.models.append(JetAdminModelDescription(Model, fields, hidden))
 
     def register_related_models(self):
         def model_key(x):
