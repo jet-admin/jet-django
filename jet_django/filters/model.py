@@ -124,7 +124,7 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
 
             serializer = SqlSerializer(data={'query': query})
             serializer.is_valid(raise_exception=True)
-            result = serializer.execute()
+            result = serializer.execute(serializer.validated_data)
             columns = list(result['columns'])
             rows = result['data']
 
