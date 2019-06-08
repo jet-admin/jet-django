@@ -135,6 +135,57 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
 
             return qs.filter(pk__in=ids)
 
+    class ModelRelationFilter(django_filters.CharFilter):
+
+        def filter(self, qs, value):
+            if value in EMPTY_VALUES:
+                return qs
+
+            from django.apps import apps
+            models = apps.get_models()
+
+            def get_model(app_label, model):
+                result = list(filter(lambda x: x._meta.app_label == app_label and x._meta.model_name == model, models))
+                return result[0] if len(result) else None
+
+            def get_field_column(model, field_name):
+                field = model._meta.get_field(field_name)
+                return field.get_attname_column()[1]
+
+            current_table = build_model
+            path = list(map(lambda x: x.split('.'), value.split('|')))
+            path_len = len(path)
+
+            sql = list()
+            args = list()
+
+            sql.append('SELECT {0}.{1} as id FROM {0}'.format(build_model._meta.db_table, build_model._meta.pk.name))
+
+            for i in range(path_len):
+                item = path[i]
+                last = i == path_len - 1
+
+                if not last:
+                    current_table_column = get_field_column(current_table, item[0])
+                    related_table = get_model(*item[1].split(';'))
+                    related_table_column = get_field_column(related_table, item[2])
+
+                    sql.append('JOIN {2} ON {0}.{1} = {2}.{3}'.format(
+                        current_table._meta.db_table,
+                        current_table_column,
+                        related_table._meta.db_table,
+                        related_table_column
+                    ))
+                    current_table = related_table
+                else:
+                    current_table_column = get_field_column(current_table, item[0])
+                    sql.append(' WHERE {0}.{1} IN (%s)'.format(current_table._meta.db_table, current_table_column))
+                    args.append(item[1])
+
+            query = build_model.objects.raw(' '.join(sql), args)
+            pks = list(map(lambda x: x.pk, query))
+            return qs.filter(pk__in=pks)
+
     filter_overrides_value = {
         models.DateTimeField: {
             'filter_class': filters.DateTimeFilter,
@@ -166,6 +217,7 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
         _search = SearchFilter()
         _m2m = M2MFilter()
         _segment = ModelSegmentFilter()
+        _relation = ModelRelationFilter()
 
         class Meta:
             model = build_model
