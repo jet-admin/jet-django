@@ -11,6 +11,11 @@ def api_method_url(method):
     return '{}/{}'.format(settings.JET_BACKEND_API_BASE_URL, method)
 
 
+def get_token():
+    token = Token.objects.all().first()
+    return token.token if token else None
+
+
 def register_token():
     token = Token.objects.all().first()
 
