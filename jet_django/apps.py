@@ -34,7 +34,7 @@ class JetDjangoConfig(AppConfig):
                 if not token:
                     return
 
-                if token and not is_token_activated(token):
+                if not is_token_activated(token):
                     print('[!] Your server token is not activated')
                     print('[!] Token: {}'.format(token.token))
                 else:
