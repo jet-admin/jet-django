@@ -49,9 +49,11 @@ class SqlSerializer(serializers.Serializer):
             rows = cursor.fetchall()
 
             def map_column(x):
-                if x.name == '?column?':
+                if not isinstance(x, tuple) or len(x) == 0:
                     return
-                return x.name
+                if x[0] == '?column?':
+                    return
+                return x[0]
 
             return {'data': rows, 'columns': map(map_column, cursor.description)}
 
