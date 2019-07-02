@@ -26,7 +26,7 @@ class RegisterView(CORSAPIViewMixin, generic.RedirectView):
         else:
             web_base_url = settings.JET_BACKEND_WEB_BASE_URL
 
-        url = '{}/projects/register/{}'.format(web_base_url, token.token)
+        url = '{}/projects/register/'.format(web_base_url)
         query_string = 'referrer={}'.format(quote(self.request.build_absolute_uri().encode('utf8')))
 
         return HttpResponseRedirect('%s?%s' % (url, query_string))
