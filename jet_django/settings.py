@@ -4,7 +4,7 @@ JET_BACKEND_API_BASE_URL = getattr(settings, 'JET_BACKEND_API_BASE_URL', 'https:
 JET_BACKEND_WEB_BASE_URL = getattr(settings, 'JET_BACKEND_WEB_BASE_URL', 'https://app.jetadmin.io')
 JET_DEMO = getattr(settings, 'JET_DEMO', False)
 JET_REGISTER_TOKEN_ON_START = getattr(settings, 'JET_REGISTER_TOKEN_ON_START', True)
-JET_CORS_HEADERS = getattr(settings, 'JET_CORS_HEADERS', True)
+JET_CORS_HEADERS = getattr(settings, 'JET_CORS_HEADERS', 'corsheaders' not in settings.INSTALLED_APPS)
 
 JET_REST_FRAMEWORK = getattr(settings, 'JET_REST_FRAMEWORK', {
     'DEFAULT_PAGINATION_CLASS': 'jet_django.deps.rest_framework.pagination.PageNumberPagination',
