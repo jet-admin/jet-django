@@ -36,6 +36,7 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
             fields.CharField,
             fields.TextField,
             fields.IPAddressField,
+            fields.GenericIPAddressField,
             fields.UUIDField
         ]
 
