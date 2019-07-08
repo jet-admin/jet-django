@@ -78,12 +78,13 @@ Requirements
 Installation
 ============
 
-| In order to install Jet Admin on your project please follow this guide:
-| https://app.jetadmin.io/projects/create
+In order to install Jet Admin on your project please follow this guide:
 
-- If you don't have **Jet** account yet you will be asked to create one and sign in with the existing account.
+https://app.jetadmin.io/projects/create
 
-- After registering your project you will be redirected to your project and can start working with **Jet**
+.. note:: 
+    If you don't have **Jet** account yet you will be asked to create one and sign in with the existing account.
+    After registering your project you will be redirected to your project and can start working with **Jet**
 
 Support
 =======
