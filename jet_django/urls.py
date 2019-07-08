@@ -38,3 +38,4 @@ def init_urls():
 
 
 jet_urls = init_urls()
+urlpatterns = jet_urls
