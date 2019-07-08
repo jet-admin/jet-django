@@ -1,7 +1,7 @@
 import logging
 import requests
 
-from jet_django import settings
+from jet_django import settings, VERSION
 from jet_django.models.token import Token
 
 logger = logging.getLogger('jet_django')
@@ -27,8 +27,12 @@ def register_token():
     headers = {
         'User-Agent': 'Jet Django'
     }
+    data = {
+        'bridge_type': 'jet_django',
+        'bridge_version': VERSION
+    }
 
-    r = requests.request('POST', url, headers=headers)
+    r = requests.request('POST', url, headers=headers, data=data)
     success = 200 <= r.status_code < 300
 
     if not success:
