@@ -145,8 +145,8 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
             from django.apps import apps
             models = apps.get_models()
 
-            def get_model(app_label, model):
-                result = list(filter(lambda x: x._meta.app_label == app_label and x._meta.model_name == model, models))
+            def get_model(model):
+                result = list(filter(lambda x: x._meta.db_table == model, models))
                 return result[0] if len(result) else None
 
             def get_field_column(model, field_name):
@@ -168,7 +168,7 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
 
                 if not last:
                     current_table_column = get_field_column(current_table, item[0])
-                    related_table = get_model(*item[1].split(';'))
+                    related_table = get_model(item[1])
                     related_table_column = get_field_column(related_table, item[2])
 
                     sql.append('JOIN {2} ON {0}.{1} = {2}.{3}'.format(
