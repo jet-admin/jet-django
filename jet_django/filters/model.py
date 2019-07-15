@@ -13,47 +13,77 @@ from jet_django.deps.django_filters.utils import resolve_field, get_model_field
 from jet_django.filters.geos_geometry import GEOSGeometryFilter
 from jet_django.serializers.sql import SqlSerializer
 
+filter_overrides_value = {
+    models.DateTimeField: {
+        'filter_class': filters.DateTimeFilter,
+        'extra': lambda f: {
+            'input_formats': ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
+        }
+    },
+    models.DateField: {
+        'filter_class': filters.DateFilter,
+        'extra': lambda f: {
+            'input_formats': ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
+        }
+    },
+    models.BooleanField: {
+        'filter_class': filters.BooleanFilter
+    }
+}
+
+try:
+    from django.contrib.gis.db.models import PointField
+    postgis_available = True
+except:
+    postgis_available = False
+    PointField = None
+
+if postgis_available:
+    filter_overrides_value[PointField] = {
+        'filter_class': GEOSGeometryFilter
+    }
+
+
+def filter_field(field):
+    if postgis_available and isinstance(field, PointField):
+        return True
+
+    try:
+        django_filters.FilterSet.filter_for_field(field, field.name)
+        return True
+    except:
+        return False
+
+
+def search_field(field):
+    allowed_fields = [
+        fields.CharField,
+        fields.TextField,
+        fields.IPAddressField,
+        fields.GenericIPAddressField,
+        fields.UUIDField
+    ]
+
+    try:
+        from django.contrib.postgres.fields import JSONField
+        allowed_fields.append(JSONField)
+    except ImportError:
+        pass
+
+    return isinstance(field, tuple(allowed_fields))
+
+
+def foreign_key_field(field):
+    return isinstance(field, (fields.related.ForeignKey,)) and isinstance(field.related_model, (base.ModelBase,))
+
+
+def foreign_key_map(field):
+    field_fields = field.related_model._meta.get_fields()
+    return list(map(lambda x: '{}__{}'.format(field.name, x.name), filter(search_field, field_fields)))
+
 
 def model_filter_class_factory(build_model, model_fields, model_relations):
     model_fields = list(model_fields)
-
-    def filter_field(field):
-        try:
-            from django.contrib.gis.db.models import PointField
-            if isinstance(field, PointField):
-                return True
-        except:
-            pass
-
-        try:
-            django_filters.FilterSet.filter_for_field(field, field.name)
-            return True
-        except:
-            return False
-
-    def search_field(field):
-        allowed_fields = [
-            fields.CharField,
-            fields.TextField,
-            fields.IPAddressField,
-            fields.GenericIPAddressField,
-            fields.UUIDField
-        ]
-
-        try:
-            from django.contrib.postgres.fields import JSONField
-            allowed_fields.append(JSONField)
-        except ImportError:
-            pass
-
-        return isinstance(field, tuple(allowed_fields))
-
-    def foreign_key_field(field):
-        return isinstance(field, (fields.related.ForeignKey,)) and isinstance(field.related_model, (base.ModelBase,))
-
-    def foreign_key_map(field):
-        field_fields = field.related_model._meta.get_fields()
-        return list(map(lambda x: '{}__{}'.format(field.name, x.name), filter(search_field, field_fields)))
 
     search_fields = list(map(lambda x: x.name, filter(search_field, model_fields)))
     search_related_fields = flatten(list(map(foreign_key_map, filter(foreign_key_field, model_fields))))
@@ -186,32 +216,6 @@ def model_filter_class_factory(build_model, model_fields, model_relations):
             query = build_model.objects.raw(' '.join(sql), args)
             pks = list(map(lambda x: x.pk, query))
             return qs.filter(pk__in=pks)
-
-    filter_overrides_value = {
-        models.DateTimeField: {
-            'filter_class': filters.DateTimeFilter,
-            'extra': lambda f: {
-                'input_formats': ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
-            }
-        },
-        models.DateField: {
-            'filter_class': filters.DateFilter,
-            'extra': lambda f: {
-                'input_formats': ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ']
-            }
-        },
-        models.BooleanField: {
-            'filter_class': filters.BooleanFilter
-        }
-    }
-
-    try:
-        from django.contrib.gis.db.models import PointField
-        filter_overrides_value[PointField] = {
-            'filter_class': GEOSGeometryFilter
-        }
-    except:
-        pass
 
     class FilterSet(django_filters.FilterSet):
         _order_by = filters.OrderingFilter(fields=filter_field_names)
