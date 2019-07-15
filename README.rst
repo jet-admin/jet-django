@@ -78,45 +78,13 @@ Requirements
 Installation
 ============
 
+In order to install Jet Admin on your project please follow this guide:
 
-**1. Download and install latest version of Jet Bridge:**
+https://app.jetadmin.io/projects/create
 
-.. code-block:: python
-
-  pip install jet-django
-
-
-**2. Add 'jet_django' application to the INSTALLED_APPS setting of your Django project settings.py file:**
-
-.. code-block:: python
-  
-  INSTALLED_APPS = (
-    ...
-    'jet_django',
-    ...
-  )
-
-**3. Add URL-pattern to the urlpatterns of your Django project urls.py file:**
-
-.. code-block:: python
-
-  from jet_django.urls import jet_urls
-  
-  urlpatterns = [
-    ...
-    url(r'^jet_api/', include(jet_urls)),
-    ...
-  ]
-
-**4. Apply migrations:**
-
-.. code-block:: python
-  
-  python manage.py migrate jet_django
-
-**5. Restart your project**
-
-**6. Open YOUR_PROJECT_URL/jet_api/register/ in browser to create a project**
+.. note:: 
+    If you don't have **Jet** account yet you will be asked to create one and sign in with the existing account.
+    After registering your project you will be redirected to your project and can start working with **Jet**
 
 Support
 =======
