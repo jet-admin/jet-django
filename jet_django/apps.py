@@ -12,17 +12,8 @@ logger = logging.getLogger('jet_django')
 class JetDjangoConfig(AppConfig):
     name = 'jet_django'
 
-    def ready(self):
+    def check_token(self):
         from jet_django.utils.backend import register_token, is_token_activated
-        from jet_django.admin.jet import jet
-
-        try:
-            models = apps.get_models()
-
-            for model in models:
-                jet.register(model)
-        except:  # if no migrations yet
-            pass
 
         is_command = len(sys.argv) > 1 and sys.argv[1].startswith('jet_')
 
@@ -42,3 +33,18 @@ class JetDjangoConfig(AppConfig):
             except Exception as e:  # if no migrations yet
                 print(e)
                 pass
+
+    def register_models(self):
+        from jet_django.admin.jet import jet
+
+        try:
+            models = apps.get_models()
+
+            for model in models:
+                jet.register(model)
+        except:  # if no migrations yet
+            pass
+
+    def ready(self):
+        self.check_token()
+        self.register_models()
