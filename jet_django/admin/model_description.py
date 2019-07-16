@@ -36,8 +36,6 @@ class JetAdminModelDescription(object):
         fields = self.model._meta.get_fields()
         def filter_fields(x):
             if any(map(lambda rel: isinstance(x, rel), [
-                models.OneToOneRel,
-                models.OneToOneField,
                 models.ManyToOneRel,
                 models.ManyToManyField,
                 models.ManyToManyRel,
