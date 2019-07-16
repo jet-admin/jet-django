@@ -3,6 +3,7 @@ import logging
 import sys
 from django.apps import AppConfig
 from django.apps import apps
+from django.db import ProgrammingError
 
 from jet_django import settings
 
@@ -30,6 +31,12 @@ class JetDjangoConfig(AppConfig):
                     print('[!] Token: {}'.format(token.token))
                 else:
                     print('[JET] Token activated')
+            except ProgrammingError as e:
+                no_migrations = str(e).find('relation "jet_django_token" does not exist') != -1
+                if no_migrations:
+                    print('[JET] Apply migrations first: python manage.py migrate jet_django')
+                else:
+                    print(e)
             except Exception as e:  # if no migrations yet
                 print(e)
                 pass
